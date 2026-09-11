@@ -41,7 +41,7 @@ void main() => runApp(
             padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
               border: Border.all(color: Colors.white),
-              borderRadius: BorderRadius.circular(50),
+              borderRadius: BorderRadius.circular(5),
 
             ),
           ),
