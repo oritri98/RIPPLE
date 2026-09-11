@@ -10,7 +10,7 @@ void main() => runApp(
           alignment: Alignment.topCenter,
           child: Text(
             'What stage are you at?',
-            style: TextStyle(color: Colors.white, fontSize: 50),
+            style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.bold),
           ),
         ),
       ),
