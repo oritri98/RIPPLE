@@ -38,7 +38,7 @@ void main() => runApp(
           const SizedBox(height: 30),
           Container(
             width: 160,
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
               border: Border.all(color: Colors.white),
               borderRadius: BorderRadius.circular(50),
