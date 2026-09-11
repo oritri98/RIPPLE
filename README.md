@@ -1,6 +1,6 @@
-# ripple_flutter
+# ripple
 
-A Machine learning based Flutter Project.
+A new Flutter project.
 
 ## Getting Started
 
