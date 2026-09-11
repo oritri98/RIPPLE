@@ -7,18 +7,34 @@ void main() => runApp(
       backgroundColor: Colors.brown,
       body: SafeArea(
 
+
         child: Padding(
           padding: const EdgeInsets.all(24.0),
 
 
+
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+
+
             children: [
+
               const Text(
                 'What stage are you at?',
-                style: TextStyle( color: Colors.white, fontSize: 50,fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.white, fontSize: 50, fontWeight: FontWeight.bold),
               ),
-            ],
+
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Student', style: TextStyle(color: Colors.white)),
+                  Icon(Icons.arrow_forward, color: Colors.white, size: 16),
+                ],
+              ),
+
+            ], //childred
           ),
         ),
       ),
