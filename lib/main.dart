@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
 void main() => runApp(
-  const MaterialApp(
+  MaterialApp(
     debugShowCheckedModeBanner: false,
     home: Scaffold(
       backgroundColor: Colors.brown,
       body: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Text(
-            'What stage are you at?',
-            style: TextStyle(color: Colors.white, fontSize: 50, fontWeight: FontWeight.bold),
+
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'What stage are you at?',
+                style: TextStyle( color: Colors.white, fontSize: 50,fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
         ),
       ),
     ),
-  ),
 );
