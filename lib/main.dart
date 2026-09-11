@@ -7,6 +7,10 @@ void main() => runApp(
       backgroundColor: Colors.brown,
       body: SafeArea(
 
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -19,4 +23,5 @@ void main() => runApp(
         ),
       ),
     ),
+  ),
 );
