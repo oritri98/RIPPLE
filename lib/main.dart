@@ -29,12 +29,13 @@ void main() => runApp(
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Icon(Icons.school_outlined, color: Colors.white),
                   Text('Student', style: TextStyle(color: Colors.white)),
                   Icon(Icons.arrow_forward, color: Colors.white, size: 16),
                 ],
               ),
 
-            ], //childred
+            ], //children
           ),
         ),
       ),
