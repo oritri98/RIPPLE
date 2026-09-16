@@ -30,42 +30,46 @@ void main() => runApp(
 
 
                //clickable button add kora instead
-              //Dribble
+              //code taken from https://www.geeksforgeeks.org/flutter
 
-              OutlinedButton(
+              ElevatedButton(
                 onPressed: () {
-
-                  print("Student button clicked!");
+                  print("Elevated button clicked");
                 },
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                  side: const BorderSide(color: Colors.white54, width: 1.5),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: const SizedBox(
-                  width: 120,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.school_outlined, color: Colors.white),
-                      Text('Student', style: TextStyle(color: Colors.white)),
-                      Icon(Icons.arrow_forward, color: Colors.white, size: 16),
-                    ],
-                  ),
-                ),
+                child: const Text('Rounded Elevated Button'),
               ),
 
 
-              //ekta button add kora done
+
+              const SizedBox(height: 16),
 
 
 
+              //diff type arekta button add
 
 
+              OutlinedButton(
+                onPressed: () {
+                  print("Outlined button clicked");
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text('Rounded Outlined Button'),
+              ),
 
 
+             //2nd button add done
 
 
 
