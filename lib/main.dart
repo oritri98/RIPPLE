@@ -4,7 +4,8 @@ void main() => runApp(
   MaterialApp(
     debugShowCheckedModeBanner: false,
     home: Scaffold(
-      backgroundColor: Colors.brown,
+      // Brown color Color(0xFF2C1E16) eita chosen
+      backgroundColor: Color(0xFF2C1E16),
       body: SafeArea(
 
 
@@ -202,7 +203,7 @@ void main() => runApp(
 
 
 
-             
+
 
 
              // 7 buttons add kora done (same style)
