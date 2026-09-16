@@ -52,7 +52,10 @@ void main() => runApp(
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: const Text('High School'),
+                child: const Text('High School',style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),),
               ),
 
 
@@ -77,7 +80,10 @@ void main() => runApp(
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: const Text('University Student'),
+                child: const Text('University Student', style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),),
               ),
 
               const SizedBox(height: 30),
@@ -96,7 +102,10 @@ void main() => runApp(
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: const Text('Just Graduated'),
+                child: const Text('Just Graduated', style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),),
               ),
 
               const SizedBox(height: 30),
@@ -115,7 +124,10 @@ void main() => runApp(
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: const Text('Working'),
+                child: const Text('Working', style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),),
               ),
 
               const SizedBox(height: 30),
@@ -123,7 +135,7 @@ void main() => runApp(
 
               OutlinedButton(
                 onPressed: () {
-                  print("Thinking of Changing Careers clicked");
+                  print("Changing Careers clicked");
                 },
                 style: OutlinedButton.styleFrom(
                   //button size control kora
@@ -134,7 +146,10 @@ void main() => runApp(
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: const Text('Thinking of Changing Careers'),
+                child: const Text('Changing Careers', style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),),
               ),
 
               const SizedBox(height: 30),
@@ -153,7 +168,10 @@ void main() => runApp(
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: const Text('Building My Own Thing'),
+                child: const Text('Building My Own Thing', style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),),
               ),
 
               const SizedBox(height: 30),
