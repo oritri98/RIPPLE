@@ -55,7 +55,7 @@ void main() => runApp(
                 child: const Text('Working'),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
 
               OutlinedButton(
                 onPressed: () {
@@ -73,26 +73,7 @@ void main() => runApp(
                 child: const Text('Working'),
               ),
 
-              const SizedBox(height: 20),
-
-
-              OutlinedButton(
-                onPressed: () {
-                  print("Working clicked");
-                },
-                style: OutlinedButton.styleFrom(
-                  //button size control kora
-                  minimumSize: const Size(300, 60),
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.white, width: 2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-                child: const Text('Working'),
-              ),
-
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
 
 
               OutlinedButton(
@@ -111,7 +92,7 @@ void main() => runApp(
                 child: const Text('Working'),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
 
 
               OutlinedButton(
@@ -130,7 +111,7 @@ void main() => runApp(
                 child: const Text('Working'),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
 
 
               OutlinedButton(
@@ -149,7 +130,8 @@ void main() => runApp(
                 child: const Text('Working'),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
+
 
               OutlinedButton(
                 onPressed: () {
@@ -167,7 +149,25 @@ void main() => runApp(
                 child: const Text('Working'),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
+
+              OutlinedButton(
+                onPressed: () {
+                  print("Working clicked");
+                },
+                style: OutlinedButton.styleFrom(
+                  //button size control kora
+                  minimumSize: const Size(300, 60),
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text('Working'),
+              ),
+
+              const SizedBox(height: 30),
 
 
 
