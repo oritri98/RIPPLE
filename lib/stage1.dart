@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'highSchool.dart';
+
 
 class StageSelectionPage extends StatelessWidget {
   const StageSelectionPage({super.key});
@@ -43,7 +45,20 @@ class StageSelectionPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("High School clicked"); },
+                  onPressed: () {
+
+                    //new screen e navigate kora
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HighSchoolPage(),
+                      ),
+                    );
+                  },
+
+
+
                   style: OutlinedButton.styleFrom(
 
                     // button size control kora
