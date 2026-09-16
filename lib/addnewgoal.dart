@@ -692,9 +692,7 @@ class _AddNewGoalState extends State<AddNewGoal> {
 
               const SizedBox(height: 7),
 
-              // =================================================
-              // GOAL 6
-              // =================================================
+              
               Container(
                 width: double.infinity,
                 height: 110,
@@ -783,9 +781,7 @@ class _AddNewGoalState extends State<AddNewGoal> {
 
               const SizedBox(height: 7),
 
-              // =================================================
-              // ADD NEW GOAL
-              // =================================================
+              
               Container(
                 width: double.infinity,
                 height: 90,
@@ -849,7 +845,8 @@ class _AddNewGoalState extends State<AddNewGoal> {
         ),
       ),
 
-      bottomNavigationBar: Container(
+      bottomNavigationBar: 
+      Container(
         height: 85,
 
         decoration: const BoxDecoration(
@@ -887,7 +884,7 @@ class _AddNewGoalState extends State<AddNewGoal> {
               ],
             ),
 
-            // JOURNAL
+            
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
 
@@ -910,10 +907,10 @@ class _AddNewGoalState extends State<AddNewGoal> {
               ],
             ),
 
-            // EMPTY SPACE FOR BUTTON
+            
             const SizedBox(width: 55),
 
-            // TASKS
+          
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
 
@@ -936,7 +933,7 @@ class _AddNewGoalState extends State<AddNewGoal> {
               ],
             ),
 
-            // INSIGHTS
+            
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
 
@@ -962,9 +959,7 @@ class _AddNewGoalState extends State<AddNewGoal> {
         ),
       ),
 
-      // ==========================================================
-      // PENCIL BUTTON
-      // ==========================================================
+     
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 255, 194, 125),
 
