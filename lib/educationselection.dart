@@ -1,334 +1,983 @@
 import 'package:flutter/material.dart';
 
-class EducationScreen extends StatefulWidget {
-  const EducationScreen({super.key});
+class AddNewGoal extends StatefulWidget {
+  const AddNewGoal({super.key});
 
   @override
-  State<EducationScreen> createState() => _EducationScreenState();
+  State<AddNewGoal> createState() => _AddNewGoalState();
 }
 
-class _EducationScreenState extends State<EducationScreen> {
-  // Currently selected frequency option ('Weekly', 'Monthly', or 'Yearly')
-  String _selectedFrequency = 'Weekly';
+class _AddNewGoalState extends State<AddNewGoal> {
+  final TextEditingController goalController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    // Exact theme palette from design
-    const backgroundColor = Color(0xFF14100E);
-    const cardUnselectedColor = Color(0xFF221A16);
-    const cardSelectedColor = Color(0xFF52332B);
-    const textColor = Color(0xFFEBE0D8);
-    const subtextColor = Color(0xFFA8988E);
-    const sectionHeaderColor = Color(0xFFC89B8C);
-
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: const Color.fromARGB(255, 13, 12, 12),
+
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 13, 12, 12),
+
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: textColor),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.maybePop(context);
+            Navigator.pop(context);
           },
         ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 1. Header Title Section
-              const Text(
-                'Education',
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 32,
-                  fontFamily: 'serif',
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Set up your education preferences',
-                style: TextStyle(
-                  color: subtextColor,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 28),
 
-              // 2. Upload Study Material Section
-              _buildSectionTitle('UPLOAD STUDY MATERIAL', sectionHeaderColor),
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: cardUnselectedColor,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: subtextColor.withValues(alpha: 0.15),
-                    width: 1,
-                  ),
+        title: const Text(
+          'Daily Goals',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+
+      // BODY
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+
+          child: Column(
+            children: [
+              const Text(
+                'Track your progress. One step at a time.',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
                 ),
-                child: Row(
+              ),
+
+              const SizedBox(height: 25),
+
+              // TODAY OVERVIEW
+              Container(
+                width: double.infinity,
+
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 33, 29, 27),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
                   children: [
-                    const Icon(
-                      Icons.cloud_upload_outlined,
-                      color: sectionHeaderColor,
-                      size: 32,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Upload image',
-                            style: TextStyle(
-                              color: textColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
+                    const Row(
+                      children: [
+                        Icon(
+                          Icons.bar_chart,
+                          color: Colors.white,
+                        ),
+
+                        SizedBox(width: 10),
+
+                        Text(
+                          "Today's Overview",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Upload notes, book pages, or resources',
-                            style: TextStyle(
-                              color: subtextColor,
-                              fontSize: 12,
-                            ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // NUMBERS
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(15),
+
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 109, 76, 65),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+                        children: [
+                          Column(
+                            children: const [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.check_circle_outline,
+                                    color: Colors.green,
+                                  ),
+
+                                  SizedBox(width: 5),
+
+                                  Text(
+                                    '3',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 5),
+
+                              Text(
+                                'Completed',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          Column(
+                            children: const [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.circle_outlined,
+                                    color: Colors.orange,
+                                  ),
+
+                                  SizedBox(width: 5),
+
+                                  Text(
+                                    '2',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 5),
+
+                              Text(
+                                'In Progress',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          Column(
+                            children: const [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.red,
+                                  ),
+
+                                  SizedBox(width: 5),
+
+                                  Text(
+                                    '2',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 5),
+
+                              Text(
+                                'Not Completed',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          Column(
+                            children: const [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.check_circle_outline,
+                                    color: Colors.green,
+                                  ),
+
+                                  SizedBox(width: 5),
+
+                                  Text(
+                                    '60%',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 5),
+
+                              Text(
+                                'Overall Progress',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // FILTERS
+              Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 208, 142, 130),
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+
+                    child: const Text(
+                      'All',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 20, 18, 17),
+                      borderRadius: BorderRadius.circular(25),
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                    ),
+
+                    child: const Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline,
+                          color: Colors.green,
+                          size: 20,
+                        ),
+
+                        SizedBox(width: 5),
+
+                        Text(
+                          'Completed',
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 20, 18, 17),
+                      borderRadius: BorderRadius.circular(25),
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                    ),
+
+                    child: const Row(
+                      children: [
+                        Icon(
+                          Icons.circle_outlined,
+                          color: Colors.orange,
+                          size: 20,
+                        ),
+
+                        SizedBox(width: 5),
+
+                        Text(
+                          'In Progress',
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  Container(
+                    padding: const EdgeInsets.all(14),
+
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 20, 18, 17),
+                      borderRadius: BorderRadius.circular(25),
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                    ),
+
+                    child: const Row(
+                      children: [
+                        Icon(
+                          Icons.cancel_outlined,
+                          color: Colors.red,
+                          size: 20,
+                        ),
+
+                        SizedBox(width: 5),
+
+                        Text(
+                          'Not Completed',
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 15),
+
+              Container(
+                width: double.infinity,
+                height: 100,
+
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 33, 29, 27),
+                ),
+
+                child: Row(
+                  children: [
+                    const SizedBox(width: 15),
+
+                    const Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.green,
+                      size: 38,
+                    ),
+
+                    const SizedBox(width: 15),
+
+                    const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+
+                      children: [
+                        Text(
+                          'Read for 30 minutes',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                          ),
+                        ),
+
+                        SizedBox(height: 7),
+
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.menu_book_outlined,
+                              color: Colors.grey,
+                              size: 16,
+                            ),
+
+                            SizedBox(width: 5),
+
+                            Text(
+                              'Personal Growth',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    const Spacer(),
+
                     Container(
                       padding: const EdgeInsets.all(10),
+
                       decoration: BoxDecoration(
-                        color: cardSelectedColor,
-                        borderRadius: BorderRadius.circular(12),
+                        color: const Color.fromARGB(30, 100, 150, 80),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(
-                        Icons.image_outlined,
-                        color: textColor,
-                        size: 22,
+
+                      child: const Text(
+                        'Completed',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
+
+                    const SizedBox(width: 10),
                   ],
                 ),
               ),
-              const SizedBox(height: 28),
 
-              // 3. Study Frequency Section (Without circles)
-              _buildSectionTitle('STUDY FREQUENCY', sectionHeaderColor),
-              const SizedBox(height: 10),
-              Container(
-                decoration: BoxDecoration(
-                  color: cardUnselectedColor,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    _buildFrequencyTile(
-                      title: 'Weekly',
-                      subtitle: 'Study every week',
-                      isSelected: _selectedFrequency == 'Weekly',
-                      onTap: () => setState(() => _selectedFrequency = 'Weekly'),
-                      showDivider: true,
-                    ),
-                    _buildFrequencyTile(
-                      title: 'Monthly',
-                      subtitle: 'Study every month',
-                      isSelected: _selectedFrequency == 'Monthly',
-                      onTap: () => setState(() => _selectedFrequency = 'Monthly'),
-                      showDivider: true,
-                    ),
-                    _buildFrequencyTile(
-                      title: 'Yearly',
-                      subtitle: 'Study every year',
-                      isSelected: _selectedFrequency == 'Yearly',
-                      onTap: () => setState(() => _selectedFrequency = 'Yearly'),
-                      showDivider: false,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 7),
 
-              // 4. Focus Area Section (Display Only)
-              _buildSectionTitle('FOCUS AREA', sectionHeaderColor),
-              const SizedBox(height: 10),
               Container(
-                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                height: 100,
+
                 decoration: BoxDecoration(
-                  color: cardSelectedColor,
-                  borderRadius: BorderRadius.circular(16),
+                  color: const Color.fromARGB(255, 33, 29, 27),
+                  borderRadius: BorderRadius.circular(18),
                 ),
+
                 child: Row(
                   children: [
+                    const SizedBox(width: 15),
+
                     const Icon(
-                      Icons.person_outline,
-                      color: textColor,
-                      size: 28,
+                      Icons.check_circle_outline,
+                      color: Colors.green,
+                      size: 38,
                     ),
-                    const SizedBox(width: 14),
+
+                    const SizedBox(width: 15),
+
+                    const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+
+                      children: [
+                        Text(
+                          'Drink 8 glasses of water',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                          ),
+                        ),
+
+                        SizedBox(height: 7),
+
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.water_drop_outlined,
+                              color: Colors.grey,
+                              size: 16,
+                            ),
+
+                            SizedBox(width: 5),
+
+                            Text(
+                              'Health',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                     const Spacer(),
+
+                    Container(
+                      padding: const EdgeInsets.all(10),
+
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(30, 100, 150, 80),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+
+                      child: const Text(
+                        'Completed',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 10),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              Container(
+                width: double.infinity,
+                height: 100,
+
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 33, 29, 27),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+
+                child: Row(
+                  children: [
+                    const SizedBox(width: 15),
+
+                    const Icon(
+                      Icons.cancel_outlined,
+                      color: Colors.red,
+                      size: 38,
+                    ),
+
+                    const SizedBox(width: 15),
+
+                    const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+
+                      children: [
+                        Text(
+                          'No sugar / junk food',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                          ),
+                        ),
+
+                        SizedBox(height: 7),
+
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.eco_outlined,
+                              color: Colors.grey,
+                              size: 16,
+                            ),
+
+                            SizedBox(width: 5),
+
+                            Text(
+                              'Health',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    const Spacer(),
+
+                    Container(
+                      padding: const EdgeInsets.all(10),
+
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(30, 150, 60, 60),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+
+                      child: const Text(
+                        'Not Completed',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 10),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 7),
+
+              Container(
+                width: double.infinity,
+                height: 100,
+
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 33, 29, 27),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+
+                child: Row(
+                  children: [
+                    const SizedBox(width: 15),
+
+                    const Icon(
+                      Icons.cancel_outlined,
+                      color: Colors.red,
+                      size: 38,
+                    ),
+
+                    const SizedBox(width: 15),
+
+                    const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+
+                      children: [
+                        Text(
+                          'Work on side project',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                          ),
+                        ),
+
+                        SizedBox(height: 7),
+
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.laptop_outlined,
+                              color: Colors.grey,
+                              size: 16,
+                            ),
+
+                            SizedBox(width: 5),
+
+                            Text(
+                              'Personal Growth',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    const Spacer(),
+
+                    Container(
+                      padding: const EdgeInsets.all(10),
+
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(30, 150, 60, 60),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+
+                      child: const Text(
+                        'Not Completed',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 10),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 7),
+
+              // =================================================
+              // GOAL 6
+              // =================================================
+              Container(
+                width: double.infinity,
+                height: 110,
+
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 33, 29, 27),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+
+                child: Row(
+                  children: [
+                    const SizedBox(width: 15),
+
+                    const Icon(
+                      Icons.circle_outlined,
+                      color: Colors.orange,
+                      size: 38,
+                    ),
+
+                    const SizedBox(width: 15),
+
                     Expanded(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Self',
+
+                        children: [
+                          const Text(
+                            'Meditate',
                             style: TextStyle(
-                              color: textColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              fontSize: 17,
                             ),
                           ),
-                          SizedBox(height: 2),
-                          Text(
-                            'This is for your personal growth',
-                            style: TextStyle(
-                              color: subtextColor,
-                              fontSize: 12,
+
+                          const SizedBox(height: 7),
+
+                          const Row(
+                            children: [
+                              Icon(
+                                Icons.spa_outlined,
+                                color: Colors.grey,
+                                size: 16,
+                              ),
+
+                              SizedBox(width: 5),
+
+                              Text(
+                                'Mindfulness',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          LinearProgressIndicator(
+                            value: 0.5,
+                            minHeight: 6,
+                            backgroundColor: Colors.grey,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.orange,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    // Display-only checkmark badge
-                    Container(
-                      width: 22,
-                      height: 22,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEBE0D8),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.check,
-                        color: cardUnselectedColor,
-                        size: 14,
+
+                    const SizedBox(width: 10),
+
+                    const Text(
+                      '5 / 10 min',
+                      style: TextStyle(
+                        color: Colors.orange,
+                        fontSize: 12,
                       ),
                     ),
+
+                    const SizedBox(width: 10),
                   ],
                 ),
               ),
-              const SizedBox(height: 36),
 
-              // 5. Save & Continue Button
-              SizedBox(
+              const SizedBox(height: 7),
+
+              // =================================================
+              // ADD NEW GOAL
+              // =================================================
+              Container(
                 width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: cardSelectedColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                  ),
-                  onPressed: () {
-                    // Action when saving education settings
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        'Save & Continue',
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                height: 90,
+
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 33, 29, 27),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+
+                child: Row(
+                  children: [
+                    const SizedBox(width: 15),
+
+                    Container(
+                      width: 40,
+                      height: 40,
+
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.grey,
                         ),
                       ),
-                      SizedBox(width: 8),
-                      Icon(Icons.arrow_forward, color: textColor, size: 18),
-                    ],
-                  ),
+                    ),
+
+                    const SizedBox(width: 15),
+
+                    const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+
+                      children: [
+                        Text(
+                          'Add New Goal',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                          ),
+                        ),
+
+                        SizedBox(height: 5),
+
+                        Text(
+                          'Tap to add a new daily goal',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(width: 10),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
+
+              const SizedBox(height: 30),
             ],
           ),
         ),
       ),
-    );
-  }
 
-  // Helper widget for Section Headers
-  Widget _buildSectionTitle(String title, Color color) {
-    return Text(
-      title,
-      style: TextStyle(
-        color: color,
-        fontSize: 12,
-        fontWeight: FontWeight.bold,
-        letterSpacing: 0.8,
-      ),
-    );
-  }
+      bottomNavigationBar: Container(
+        height: 85,
 
-  // Helper widget for Frequency Options (No Circle)
-  Widget _buildFrequencyTile({
-    required String title,
-    required String subtitle,
-    required bool isSelected,
-    required VoidCallback onTap,
-    required bool showDivider,
-  }) {
-    const textColor = Color(0xFFEBE0D8);
-    const subtextColor = Color(0xFFA8988E);
+        decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 21, 18, 17),
 
-    return Column(
-      children: [
-        InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.calendar_today_outlined,
-                  color: textColor,
-                  size: 22,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+        ),
+
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              children: const [
+                Icon(
+                  Icons.wb_sunny_outlined,
+                  color: Color.fromARGB(255, 255, 214, 154),
+                  size: 25,
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: 15,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        subtitle,
-                        style: const TextStyle(
-                          color: subtextColor,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+
+                SizedBox(height: 5),
+
+                Text(
+                  'Today',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
                   ),
                 ),
               ],
             ),
-          ),
+
+            // JOURNAL
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              children: const [
+                Icon(
+                  Icons.menu_book_outlined,
+                  color: Colors.grey,
+                  size: 25,
+                ),
+
+                SizedBox(height: 5),
+
+                Text(
+                  'Journal',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+
+            // EMPTY SPACE FOR BUTTON
+            const SizedBox(width: 55),
+
+            // TASKS
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              children: const [
+                Icon(
+                  Icons.check_circle_outline,
+                  color: Colors.grey,
+                  size: 25,
+                ),
+
+                SizedBox(height: 5),
+
+                Text(
+                  'Tasks',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+
+            // INSIGHTS
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              children: const [
+                Icon(
+                  Icons.insights_outlined,
+                  color: Colors.grey,
+                  size: 25,
+                ),
+
+                SizedBox(height: 5),
+
+                Text(
+                  'Insights',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-        if (showDivider)
-          const Divider(
-            color: Color(0xFF2D231E),
-            height: 1,
-            indent: 16,
-            endIndent: 16,
-          ),
-      ],
+      ),
+
+      // ==========================================================
+      // PENCIL BUTTON
+      // ==========================================================
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(255, 255, 194, 125),
+
+        onPressed: () {},
+
+        child: const Icon(
+          Icons.edit,
+          color: Color.fromARGB(255, 90, 47, 11),
+        ),
+      ),
+
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.centerDocked,
     );
   }
 }
