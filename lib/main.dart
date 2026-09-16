@@ -4,8 +4,8 @@ void main() => runApp(
   MaterialApp(
     debugShowCheckedModeBanner: false,
     home: Scaffold(
-      // Brown color Color(0xFF2C1E16) eita chosen
-      backgroundColor: Color(0xFF2C1E16),
+      // Brown color Color(0xFF1E140F) eita chosen, not Color(0xFF2C1E16)
+      backgroundColor: Color(0xFF1E140F),
       body: SafeArea(
 
 
