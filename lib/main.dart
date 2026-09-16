@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'stage1.dart'; // 1. Import your new file here
+import 'stage1.dart'; // Import new file (1st jeita ashbe)
 
 void main() => runApp(const MyApp());
 
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: StageSelectionPage(), // 2. Tell the app to show your new page
+      home: StageSelectionPage(), //show new page (1st one called)
     );
   }
 }
