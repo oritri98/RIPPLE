@@ -32,45 +32,148 @@ void main() => runApp(
                //clickable button add kora instead
               //code taken from https://www.geeksforgeeks.org/flutter
 
-              
-              ElevatedButton(
-                onPressed: () {
-                  print("Elevated button clicked");
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-                child: const Text('Rounded Elevated Button'),
-              ),
 
 
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 40),
 
-
-
-              //diff type arekta button add
 
 
               OutlinedButton(
                 onPressed: () {
-                  print("Outlined button clicked");
+                  print("Working clicked");
                 },
                 style: OutlinedButton.styleFrom(
+                  //button size control kora
+                  minimumSize: const Size(300, 60),
                   foregroundColor: Colors.white,
                   side: const BorderSide(color: Colors.white, width: 2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: const Text('Rounded Outlined Button'),
+                child: const Text('Working'),
               ),
 
+              const SizedBox(height: 20),
 
-             //2nd button add done
+              OutlinedButton(
+                onPressed: () {
+                  print("Working clicked");
+                },
+                style: OutlinedButton.styleFrom(
+                  //button size control kora
+                  minimumSize: const Size(300, 60),
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text('Working'),
+              ),
+
+              const SizedBox(height: 20),
+
+
+              OutlinedButton(
+                onPressed: () {
+                  print("Working clicked");
+                },
+                style: OutlinedButton.styleFrom(
+                  //button size control kora
+                  minimumSize: const Size(300, 60),
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text('Working'),
+              ),
+
+              const SizedBox(height: 20),
+
+
+              OutlinedButton(
+                onPressed: () {
+                  print("Working clicked");
+                },
+                style: OutlinedButton.styleFrom(
+                  //button size control kora
+                  minimumSize: const Size(300, 60),
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text('Working'),
+              ),
+
+              const SizedBox(height: 20),
+
+
+              OutlinedButton(
+                onPressed: () {
+                  print("Working clicked");
+                },
+                style: OutlinedButton.styleFrom(
+                  //button size control kora
+                  minimumSize: const Size(300, 60),
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text('Working'),
+              ),
+
+              const SizedBox(height: 20),
+
+
+              OutlinedButton(
+                onPressed: () {
+                  print("Working clicked");
+                },
+                style: OutlinedButton.styleFrom(
+                  //button size control kora
+                  minimumSize: const Size(300, 60),
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text('Working'),
+              ),
+
+              const SizedBox(height: 20),
+
+              OutlinedButton(
+                onPressed: () {
+                  print("Working clicked");
+                },
+                style: OutlinedButton.styleFrom(
+                  //button size control kora
+                  minimumSize: const Size(300, 60),
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text('Working'),
+              ),
+
+              const SizedBox(height: 20),
+
+
+
+
+
+             // button add done
 
 
 
