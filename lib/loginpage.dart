@@ -11,7 +11,7 @@ class _LoginpageState extends State<Loginpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 43, 36, 36),
 
       body: Center(
         child: Padding(
@@ -41,7 +41,7 @@ class _LoginpageState extends State<Loginpage> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 30, 30, 30),
+                      color: Color.fromARGB(255, 247, 245, 245),
                     ),
                   ),
                 ),
@@ -67,7 +67,7 @@ class _LoginpageState extends State<Loginpage> {
                   'Email',
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color.fromARGB(255, 30, 30, 30),
+                    color: Color.fromARGB(255, 251, 249, 249),
                   ),
                 ),
 
@@ -113,7 +113,7 @@ class _LoginpageState extends State<Loginpage> {
                   'Password',
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color.fromARGB(255, 30, 30, 30),
+                    color: Color.fromARGB(255, 250, 249, 248),
                   ),
                 ),
 
@@ -173,7 +173,7 @@ class _LoginpageState extends State<Loginpage> {
                       'Forgot Password?',
                       style: TextStyle(
                         fontSize: 15,
-                        color: Color.fromARGB(255, 109, 76, 65),
+                        color: Color.fromARGB(255, 254, 253, 253),
                       ),
                     ),
                   ),
@@ -265,7 +265,7 @@ class _LoginpageState extends State<Loginpage> {
                       'Don\'t have an account?',
                       style: TextStyle(
                         fontSize: 15,
-                        color: Color.fromARGB(255, 30, 30, 30),
+                        color: Color.fromARGB(255, 243, 242, 242),
                       ),
                     ),
 
