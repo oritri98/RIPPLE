@@ -171,7 +171,12 @@ void main() => runApp(
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: const Text('Entrepreneur'),
+                child: const Text('Entrepreneur', style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+                ),
+
               ),
 
               const SizedBox(height: 30),
