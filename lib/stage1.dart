@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'highSchool.dart';
+import 'uniStudent.dart';
+import 'justGrad.dart';
+import 'working.dart';
+import 'changingCareer.dart';
+import 'buildingOwn.dart';
+import 'entrepreneur.dart';
 
 
 class StageSelectionPage extends StatelessWidget {
