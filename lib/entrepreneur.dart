@@ -21,7 +21,7 @@ class entrepreneurPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'What ?',
+                  'What are you working toward?',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 50,

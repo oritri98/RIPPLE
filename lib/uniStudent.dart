@@ -116,25 +116,6 @@ class uniStudentPage extends StatelessWidget {
 
 
 
-                OutlinedButton(
-                  onPressed: () { print("Build a Startup clicked"); },
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
-                  child: const Text('Build a Startup', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                ),
-
-
-
-
-
-                const SizedBox(height: 30),
-
 
 
 
