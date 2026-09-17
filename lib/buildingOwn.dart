@@ -42,7 +42,7 @@ class buildingOwnPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("High School clicked"); },
+                  onPressed: () { print("Startup clicked"); },
                   style: OutlinedButton.styleFrom(
 
                     // button size control kora
@@ -58,7 +58,7 @@ class buildingOwnPage extends StatelessWidget {
 
                   //button er bhitorer text bold and size control
 
-                  child: const Text('High School',style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Startup',style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
 
@@ -70,7 +70,7 @@ class buildingOwnPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("University Student clicked"); },
+                  onPressed: () { print("Freelance clicked"); },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -79,7 +79,7 @@ class buildingOwnPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  child: const Text('University Student', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Freelance', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
 
@@ -92,7 +92,7 @@ class buildingOwnPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Just Graduated clicked"); },
+                  onPressed: () { print("Small Business clicked"); },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -101,33 +101,9 @@ class buildingOwnPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  child: const Text('Just Graduated', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Small Business', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
-
-
-
-
-
-                const SizedBox(height: 30),
-
-
-
-
-
-
-                OutlinedButton(
-                  onPressed: () { print("Working clicked"); },
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
-                  child: const Text('Working', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                ),
 
 
 
@@ -141,7 +117,7 @@ class buildingOwnPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Changing Careers clicked"); },
+                  onPressed: () { print("Personal Brand clicked"); },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -150,7 +126,7 @@ class buildingOwnPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  child: const Text('Changing Careers', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Personal Brand', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
 
@@ -165,7 +141,7 @@ class buildingOwnPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Building My Own Thing clicked"); },
+                  onPressed: () { print("Creative Project clicked"); },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -174,7 +150,7 @@ class buildingOwnPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  child: const Text('Building My Own Thing', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Creative Project', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
 
@@ -189,7 +165,7 @@ class buildingOwnPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Entrepreneur clicked"); },
+                  onPressed: () { print("Side Hustle clicked"); },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -198,7 +174,7 @@ class buildingOwnPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  child: const Text('Entrepreneur', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Side Hustle', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
 
