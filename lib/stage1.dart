@@ -86,7 +86,17 @@ class StageSelectionPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("University Student clicked"); },
+                    onPressed: () {
+
+                      //new screen e navigate kora
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HighSchoolPage(),
+                        ),
+                      );
+                    },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -108,7 +118,17 @@ class StageSelectionPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Just Graduated clicked"); },
+                  onPressed: () {
+
+                    //new screen e navigate kora
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HighSchoolPage(),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -133,7 +153,17 @@ class StageSelectionPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Working clicked"); },
+                  onPressed: () {
+
+                    //new screen e navigate kora
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HighSchoolPage(),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -157,7 +187,17 @@ class StageSelectionPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Changing Careers clicked"); },
+                  onPressed: () {
+
+                    //new screen e navigate kora
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HighSchoolPage(),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -181,7 +221,17 @@ class StageSelectionPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Building My Own Thing clicked"); },
+                  onPressed: () {
+
+                    //new screen e navigate kora
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HighSchoolPage(),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -205,7 +255,17 @@ class StageSelectionPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Entrepreneur clicked"); },
+                  onPressed: () {
+
+                    //new screen e navigate kora
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HighSchoolPage(),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
