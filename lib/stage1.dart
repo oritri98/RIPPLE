@@ -93,7 +93,7 @@ class StageSelectionPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const HighSchoolPage(),
+                          builder: (context) => const uniStudentPage(),
                         ),
                       );
                     },
@@ -125,7 +125,7 @@ class StageSelectionPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HighSchoolPage(),
+                        builder: (context) => const justGradPage(),
                       ),
                     );
                   },
@@ -160,7 +160,7 @@ class StageSelectionPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HighSchoolPage(),
+                        builder: (context) => const workingPage(),
                       ),
                     );
                   },
@@ -194,7 +194,7 @@ class StageSelectionPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HighSchoolPage(),
+                        builder: (context) => const changingCareerPage(),
                       ),
                     );
                   },
@@ -228,7 +228,7 @@ class StageSelectionPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HighSchoolPage(),
+                        builder: (context) => const buildingOwnPage(),
                       ),
                     );
                   },
@@ -262,7 +262,7 @@ class StageSelectionPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HighSchoolPage(),
+                        builder: (context) => const entrepreneurPage(),
                       ),
                     );
                   },
