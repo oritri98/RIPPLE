@@ -21,7 +21,7 @@ class justGradPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'What ?',
+                  'What is your next plan?',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 50,
@@ -42,7 +42,7 @@ class justGradPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("High School clicked"); },
+                  onPressed: () { print("Find a Job clicked"); },
                   style: OutlinedButton.styleFrom(
 
                     // button size control kora
@@ -58,7 +58,7 @@ class justGradPage extends StatelessWidget {
 
                   //button er bhitorer text bold and size control
 
-                  child: const Text('High School',style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Find a Job',style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
 
@@ -70,7 +70,7 @@ class justGradPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("University Student clicked"); },
+                  onPressed: () { print("Higher Studies clicked"); },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -79,7 +79,7 @@ class justGradPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  child: const Text('University Student', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Higher Studies Student', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
 
@@ -92,7 +92,7 @@ class justGradPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Just Graduated clicked"); },
+                  onPressed: () { print("Higher Studies clicked"); },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -101,33 +101,9 @@ class justGradPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  child: const Text('Just Graduated', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Higher Studies', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
-
-
-
-
-
-                const SizedBox(height: 30),
-
-
-
-
-
-
-                OutlinedButton(
-                  onPressed: () { print("Working clicked"); },
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
-                  child: const Text('Working', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                ),
 
 
 
@@ -141,7 +117,7 @@ class justGradPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Changing Careers clicked"); },
+                  onPressed: () { print("Freelance clicked"); },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -150,7 +126,7 @@ class justGradPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  child: const Text('Changing Careers', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Freelance', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
 
@@ -165,7 +141,7 @@ class justGradPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Building My Own Thing clicked"); },
+                  onPressed: () { print("Travel clicked"); },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -174,7 +150,7 @@ class justGradPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  child: const Text('Building My Own Thing', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Travel', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
 
@@ -189,7 +165,7 @@ class justGradPage extends StatelessWidget {
 
 
                 OutlinedButton(
-                  onPressed: () { print("Entrepreneur clicked"); },
+                  onPressed: () { print("Still Exploring clicked"); },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(300, 60),
                     foregroundColor: Colors.white,
@@ -198,7 +174,7 @@ class justGradPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  child: const Text('Entrepreneur', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  child: const Text('Still Exploring', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ),
 
 
@@ -206,6 +182,12 @@ class justGradPage extends StatelessWidget {
 
 
                 const SizedBox(height: 30),
+
+
+
+
+
+
 
 
 
