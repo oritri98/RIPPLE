@@ -47,7 +47,7 @@ class justGradPage extends StatelessWidget {
 
                     // button size control kora
 
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -72,7 +72,7 @@ class justGradPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Higher Studies clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -94,7 +94,7 @@ class justGradPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Higher Studies clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -119,7 +119,7 @@ class justGradPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Freelance clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -143,7 +143,7 @@ class justGradPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Travel clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -167,7 +167,7 @@ class justGradPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Still Exploring clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(

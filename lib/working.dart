@@ -47,7 +47,7 @@ class workingPage extends StatelessWidget {
 
                     // button size control kora
 
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -72,7 +72,7 @@ class workingPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Change Careers clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -94,7 +94,7 @@ class workingPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Higher Salary clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -119,7 +119,7 @@ class workingPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Start a Business clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -143,7 +143,7 @@ class workingPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Work Abroad clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -167,7 +167,7 @@ class workingPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Better Work-Life Balance clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(

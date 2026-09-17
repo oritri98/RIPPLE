@@ -24,7 +24,7 @@ class StageSelectionPage extends StatelessWidget {
 
 
 
-          
+
           // smaller phone hoile user can scroll down and crashing/overflowing hobe na
           child: SingleChildScrollView(
             child: Column(
@@ -70,7 +70,7 @@ class StageSelectionPage extends StatelessWidget {
 
                     // button size control kora
 
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -105,7 +105,7 @@ class StageSelectionPage extends StatelessWidget {
                       );
                     },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -137,7 +137,7 @@ class StageSelectionPage extends StatelessWidget {
                     );
                   },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -172,7 +172,7 @@ class StageSelectionPage extends StatelessWidget {
                     );
                   },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -206,7 +206,7 @@ class StageSelectionPage extends StatelessWidget {
                     );
                   },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -240,7 +240,7 @@ class StageSelectionPage extends StatelessWidget {
                     );
                   },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -274,7 +274,7 @@ class StageSelectionPage extends StatelessWidget {
                     );
                   },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(

@@ -47,7 +47,7 @@ class entrepreneurPage extends StatelessWidget {
 
                     // button size control kora
 
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -72,7 +72,7 @@ class entrepreneurPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Find Investors clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -94,7 +94,7 @@ class entrepreneurPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Build a Team clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -119,7 +119,7 @@ class entrepreneurPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Launch a Product clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -143,7 +143,7 @@ class entrepreneurPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Start Something New clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -167,7 +167,7 @@ class entrepreneurPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () { print("Sell clicked"); },
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(300, 60),
+                    minimumSize: const Size(400, 60),
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
