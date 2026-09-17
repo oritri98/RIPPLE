@@ -21,7 +21,7 @@ class HighSchoolPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'What ?',
+                  'Where are you leaning?',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 50,
