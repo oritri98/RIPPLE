@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'stage1.dart'; // Import new file (1st jeita ashbe)
+import 'screens/login_screen.dart';
+import 'theme/app_theme.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,9 +9,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      title: 'Ripple',
       debugShowCheckedModeBanner: false,
-      home: StageSelectionPage(), //show new page (1st one called)
+      theme: AppTheme.darkTheme,
+      home: const LoginScreen(),
     );
   }
 }
