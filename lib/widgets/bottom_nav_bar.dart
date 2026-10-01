@@ -1,12 +1,7 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../theme/app_theme.dart';
+import '../constants/app_colors.dart';
 
-/// CustomBottomNavBar provides the floating pill navigation bar at the bottom.
-/// 
-/// BEGINNER TIP:
-/// We place a gap in the center of the bar so that the floating capture button (FAB)
-/// sits comfortably right above or between the navigation items!
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -19,75 +14,122 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLight = AppColors.isLight;
+
     return Container(
-      height: 64,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      height: 66,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest.withValues(alpha: 0.95),
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.6),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(34),
+        boxShadow: isLight
+            ? [
+                BoxShadow(
+                  color: const Color(0xFF003366).withValues(alpha: 0.12),
+                  blurRadius: 28,
+                  offset: const Offset(0, 10),
+                  spreadRadius: -2,
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  blurRadius: 24,
+                  offset: const Offset(0, 10),
+                ),
+              ],
       ),
-      child: Row(
-        children: [
-          // 1. Today Tab
-          Expanded(
-            child: _buildNavItem(
-              icon: Icons.wb_twilight,
-              label: 'Today',
-              index: 0,
-              isSelected: currentIndex == 0,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(34),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: isLight
+                  ? Colors.white.withValues(alpha: 0.85)
+                  : AppDarkColors.surfaceContainerLowest.withValues(alpha: 0.95),
+              borderRadius: BorderRadius.circular(34),
+              border: Border.all(
+                color: isLight
+                    ? Colors.white.withValues(alpha: 0.95)
+                    : AppDarkColors.primary.withValues(alpha: 0.25),
+                width: 1.2,
+              ),
+              gradient: isLight
+                  ? LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.92),
+                        Colors.white.withValues(alpha: 0.72),
+                      ],
+                    )
+                  : null,
+            ),
+            child: Row(
+              children: [
+                // 1. Today / Home Tab
+                Expanded(
+                  child: _buildNavItem(
+                    icon: Icons.wb_twilight_rounded,
+                    label: 'Today',
+                    index: 0,
+                    isSelected: currentIndex == 0,
+                  ),
+                ),
+
+                // 2. Journal Tab
+                Expanded(
+                  child: _buildNavItem(
+                    icon: Icons.auto_stories_outlined,
+                    label: 'Journal',
+                    index: 1,
+                    isSelected: currentIndex == 1,
+                  ),
+                ),
+
+                // 3. Events Tab (Calendar & Memories)
+                Expanded(
+                  child: _buildNavItem(
+                    icon: Icons.calendar_month_rounded,
+                    label: 'Events',
+                    index: 2,
+                    isSelected: currentIndex == 2,
+                  ),
+                ),
+
+                // 4. Tasks & Goals Tab
+                Expanded(
+                  child: _buildNavItem(
+                    icon: Icons.check_circle_outline_rounded,
+                    label: 'Tasks',
+                    index: 3,
+                    isSelected: currentIndex == 3,
+                  ),
+                ),
+
+                // 5. Insights Tab
+                Expanded(
+                  child: _buildNavItem(
+                    icon: Icons.insights_rounded,
+                    label: 'Insights',
+                    index: 4,
+                    isSelected: currentIndex == 4,
+                  ),
+                ),
+              ],
             ),
           ),
-
-          // 2. Journal Tab
-          Expanded(
-            child: _buildNavItem(
-              icon: Icons.auto_stories_outlined,
-              label: 'Journal',
-              index: 1,
-              isSelected: currentIndex == 1,
-            ),
-          ),
-
-          // Spacer for the center Quick Capture stylus button
-          const SizedBox(width: 48),
-
-          // 3. Tasks Tab
-          Expanded(
-            child: _buildNavItem(
-              icon: Icons.check_circle_outline,
-              label: 'Tasks',
-              index: 2,
-              isSelected: currentIndex == 2,
-            ),
-          ),
-
-          // 4. Insights Tab
-          Expanded(
-            child: _buildNavItem(
-              icon: Icons.insights_outlined,
-              label: 'Insights',
-              index: 3,
-              isSelected: currentIndex == 3,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  /// Helper to build a single navigation tab icon + text
   Widget _buildNavItem({
     required IconData icon,
     required String label,
@@ -101,22 +143,23 @@ class CustomBottomNavBar extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 6),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 icon,
-                size: 20,
+                size: 21,
                 color: color,
               ),
               const SizedBox(height: 3),
               Text(
                 label,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 11,
+                style: TextStyle(
+                  fontSize: 10.5,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                   color: color,
+                  letterSpacing: 0.1,
                 ),
               ),
             ],

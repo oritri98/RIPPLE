@@ -1,24 +1,32 @@
-/// TaskItem represents a single intention or task in Ripple.
-/// 
-/// BEGINNER TIP:
-/// A model class is like a blueprint. It defines what pieces of information
-/// a "Task" holds so our UI can display it accurately.
+enum TaskPriority {
+  deepWork,
+  dailyRhythm,
+  eveningWindDown,
+}
+
 class TaskItem {
   final String id;
-  final String title;
-  final String tag;
-  final String time;
+  String title;
   bool isCompleted;
-  final bool isHighPriority;
-  final bool isInProgress;
+  final TaskPriority priority;
+  final String? domainCategory; // 'Career', 'Education', 'Health', or null
 
   TaskItem({
     required this.id,
     required this.title,
-    required this.tag,
-    required this.time,
     this.isCompleted = false,
-    this.isHighPriority = false,
-    this.isInProgress = false,
+    this.priority = TaskPriority.dailyRhythm,
+    this.domainCategory,
   });
+
+  String get priorityLabel {
+    switch (priority) {
+      case TaskPriority.deepWork:
+        return 'Deep Work';
+      case TaskPriority.dailyRhythm:
+        return 'Daily Rhythm';
+      case TaskPriority.eveningWindDown:
+        return 'Evening Wind Down';
+    }
+  }
 }

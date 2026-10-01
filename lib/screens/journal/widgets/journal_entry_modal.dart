@@ -1,34 +1,39 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../theme/app_theme.dart';
+import '../../../constants/app_colors.dart';
+import '../../../models/journal_entry.dart';
+import '../../../models/mood_item.dart';
+import '../../../models/voice_memo_item.dart';
+import '../../../services/journal_service.dart';
+import 'voice_memo_player_widget.dart';
+import 'voice_memo_recorder_widget.dart';
 
-/// Helper function to open the Journal Entry modal bottom sheet from anywhere in the app!
-/// 
-/// BEGINNER TIP:
-/// By putting `showJournalEntryModal` here, any button (like the 'Begin Entry'
-/// button on Home or the floating Stylus FAB) can call this single function!
-void showJournalEntryModal(BuildContext context, {String? prompt}) {
+void showJournalEntryModal(
+  BuildContext context, {
+  DateTime? initialDate,
+  Function(JournalEntry)? onSave,
+}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (ctx) => JournalEntryModal(
-      initialPrompt: prompt ?? 'What is one small moment of stillness you can protect today?',
+    backgroundColor: AppColors.surfaceContainerLowest,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+    ),
+    builder: (modalContext) => JournalEntryModal(
+      initialDate: initialDate,
+      onSave: onSave,
     ),
   );
 }
 
-/// JournalEntryModal represents the rich, calm reflection writing sheet.
-/// 
-/// LOCATION:
-/// screens/journal/widgets/ - Dedicated journal entry pop-up component.
 class JournalEntryModal extends StatefulWidget {
-  final String initialPrompt;
+  final DateTime? initialDate;
+  final Function(JournalEntry)? onSave;
 
   const JournalEntryModal({
     super.key,
-    required this.initialPrompt,
+    this.initialDate,
+    this.onSave,
   });
 
   @override
@@ -36,671 +41,720 @@ class JournalEntryModal extends StatefulWidget {
 }
 
 class _JournalEntryModalState extends State<JournalEntryModal> {
-  final TextEditingController _textController = TextEditingController();
-  
-  // State variables for interactive features
-  int _wordCount = 0;
-  String _selectedMood = 'Grateful';
-  bool _showPhotoAttachment = true;
-  bool _isVoiceRecording = false;
-  int _recordingSeconds = 14;
-  Timer? _recordingTimer;
-  bool _isSaving = false;
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
+  final TextEditingController _gratitudeController = TextEditingController();
 
-  // Available mood options matching Stitch popup
-  final List<Map<String, String>> _moods = const [
-    {'emoji': '🌿', 'name': 'Calm'},
-    {'emoji': '✨', 'name': 'Grateful'},
-    {'emoji': '☕', 'name': 'Focused'},
-    {'emoji': '🌙', 'name': 'Restful'},
+  late DateTime _entryDate;
+  MoodItem _selectedMood = MoodItem.defaultMoods[0];
+  final List<String> _gratitudeItems = [];
+  final List<String> _attachedImages = [];
+  final List<VoiceMemoItem> _attachedMemos = [];
+  bool _isRecording = false;
+
+  static const List<Map<String, String>> _curatedPhotos = [
+    {
+      'title': 'Morning Coffee',
+      'url': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80',
+    },
+    {
+      'title': 'Mindful Desk',
+      'url': 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80',
+    },
+    {
+      'title': 'Golden Sunset',
+      'url': 'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?auto=format&fit=crop&w=800&q=80',
+    },
+    {
+      'title': 'Lush Nature',
+      'url': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=800&q=80',
+    },
+    {
+      'title': 'Active Energy',
+      'url': 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80',
+    },
+    {
+      'title': 'Quiet Headspace',
+      'url': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80',
+    },
   ];
 
   @override
   void initState() {
     super.initState();
-    _textController.addListener(_updateWordCount);
+    _entryDate = widget.initialDate ?? DateTime.now();
   }
 
   @override
   void dispose() {
-    _textController.removeListener(_updateWordCount);
-    _textController.dispose();
-    _recordingTimer?.cancel();
+    _titleController.dispose();
+    _contentController.dispose();
+    _gratitudeController.dispose();
     super.dispose();
   }
 
-  void _updateWordCount() {
-    final text = _textController.text.trim();
-    final words = text.isEmpty ? 0 : text.split(RegExp(r'\s+')).length;
-    if (words != _wordCount) {
+  void _addGratitude() {
+    final text = _gratitudeController.text.trim();
+    if (text.isNotEmpty && !_gratitudeItems.contains(text)) {
       setState(() {
-        _wordCount = words;
+        _gratitudeItems.add(text);
+        _gratitudeController.clear();
       });
     }
   }
 
-  void _toggleVoiceRecording() {
-    setState(() {
-      _isVoiceRecording = !_isVoiceRecording;
-      if (_isVoiceRecording) {
-        _recordingSeconds = 14;
-        _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-          setState(() {
-            _recordingSeconds++;
-          });
-        });
-      } else {
-        _recordingTimer?.cancel();
-      }
-    });
-  }
-
-  void _saveEntry() {
-    setState(() {
-      _isSaving = true;
-    });
-
-    Future.delayed(const Duration(milliseconds: 600), () {
-      if (mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: AppColors.surfaceContainerHigh,
-            content: Text(
-              'Reflection saved to your Journal.',
-              style: GoogleFonts.plusJakartaSans(color: AppColors.primary),
+  void _showAddPhotoSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surfaceContainerLow,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Attach Photo to Entry',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.onSurface,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.add_link_rounded),
+                      tooltip: 'Enter Custom Image URL',
+                      onPressed: () {
+                        Navigator.pop(sheetContext);
+                        _promptCustomImageUrl();
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Select from mindful presets or provide an image link:',
+                  style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+                ),
+                const SizedBox(height: 14),
+                SizedBox(
+                  height: 120,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: _curatedPhotos.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 10),
+                    itemBuilder: (context, index) {
+                      final item = _curatedPhotos[index];
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _attachedImages.add(item['url']!);
+                          });
+                          Navigator.pop(sheetContext);
+                        },
+                        child: Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.network(
+                                item['url']!,
+                                width: 90,
+                                height: 80,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, _, _) => Container(
+                                  width: 90,
+                                  height: 80,
+                                  color: AppColors.surfaceContainerHigh,
+                                  child: const Icon(Icons.photo),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              item['title']!,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.onSurface,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(sheetContext);
+                      _promptCustomImageUrl();
+                    },
+                    icon: const Icon(Icons.link_rounded, size: 18),
+                    label: const Text('Add Custom Image URL'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      side: BorderSide(color: AppColors.primary.withValues(alpha: 0.5)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
             ),
-            duration: const Duration(seconds: 2),
           ),
         );
-      }
-    });
+      },
+    );
   }
 
-  String _formatTimer(int totalSeconds) {
-    final minutes = (totalSeconds ~/ 60).toString().padLeft(2, '0');
-    final seconds = (totalSeconds % 60).toString().padLeft(2, '0');
-    return '$minutes:$seconds';
+  void _promptCustomImageUrl() {
+    final urlController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (dialogCtx) {
+        return AlertDialog(
+          backgroundColor: AppColors.surfaceContainer,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Text(
+            'Add Image Link',
+            style: TextStyle(color: AppColors.onSurface, fontSize: 17),
+          ),
+          content: TextField(
+            controller: urlController,
+            style: TextStyle(color: AppColors.onSurface),
+            decoration: InputDecoration(
+              hintText: 'https://example.com/photo.jpg',
+              hintStyle: TextStyle(color: AppColors.textMuted),
+              filled: true,
+              fillColor: AppColors.surfaceContainerHigh,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogCtx),
+              child: Text('Cancel', style: TextStyle(color: AppColors.onSurfaceVariant)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final url = urlController.text.trim();
+                if (url.isNotEmpty) {
+                  setState(() {
+                    _attachedImages.add(url);
+                  });
+                }
+                Navigator.pop(dialogCtx);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.onPrimary,
+              ),
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _pickEntryDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _entryDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null) {
+      setState(() {
+        _entryDate = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          _entryDate.hour,
+          _entryDate.minute,
+        );
+      });
+    }
+  }
+
+  void _handleSave() {
+    final title = _titleController.text.trim();
+    final content = _contentController.text.trim();
+
+    if (content.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please write a reflection before saving.')),
+      );
+      return;
+    }
+
+    final newEntry = JournalEntry(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: title.isEmpty ? 'Daily Reflection' : title,
+      content: content,
+      date: _entryDate,
+      mood: _selectedMood,
+      tags: ['Mindfulness', _selectedMood.label],
+      gratitudeItems: List.from(_gratitudeItems),
+      images: List.from(_attachedImages),
+      voiceMemos: List.from(_attachedMemos),
+    );
+
+    JournalService.instance.addEntry(newEntry);
+
+    if (widget.onSave != null) {
+      widget.onSave!(newEntry);
+    }
+
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Journal entry & memories saved to your timeline! ✨'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Keyboard inset ensures writing area stays above the on-screen keyboard
-    final keyboardInset = MediaQuery.of(context).viewInsets.bottom;
-
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.90,
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      padding: EdgeInsets.only(bottom: keyboardInset),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1C1513),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        border: Border.all(
-          color: AppColors.outlineVariant.withValues(alpha: 0.4),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.7),
-            blurRadius: 30,
-            offset: const Offset(0, -10),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // 1. Grab / Drag Handle
-          Center(
-            child: Container(
-              width: 42,
-              height: 4,
-              margin: const EdgeInsets.only(top: 12, bottom: 4),
-              decoration: BoxDecoration(
-                color: AppColors.outlineVariant.withValues(alpha: 0.6),
-                borderRadius: BorderRadius.circular(2),
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.90,
+        padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 42,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 16),
 
-          // 2. Modal Top Header (Close, Title, Word count, Save button)
-          _buildHeader(),
-
-          // 3. Scrollable Content Area (Prompt, Moods, Text Input, Attachments)
-          Flexible(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Prompt Reminder Card
-                  _buildPromptCard(),
-                  const SizedBox(height: 14),
-
-                  // Mood Pills Selector Row
-                  _buildMoodSelectorRow(),
-                  const SizedBox(height: 14),
-
-                  // Freeform Writing Textarea
-                  _buildWritingArea(),
-                  const SizedBox(height: 14),
-
-                  // Optional Photo Memory Attachment
-                  if (_showPhotoAttachment) ...[
-                    _buildPhotoAttachment(),
-                    const SizedBox(height: 14),
-                  ],
-
-                  // Voice Recording Active Banner
-                  if (_isVoiceRecording) ...[
-                    _buildVoiceRecordingBanner(),
-                    const SizedBox(height: 14),
-                  ],
-                ],
-              ),
-            ),
-          ),
-
-          // 4. Modal Action Dock / Footer Toolbar
-          _buildFooterToolbar(),
-        ],
-      ),
-    );
-  }
-
-  /// Top Modal Header Row
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.outlineVariant.withValues(alpha: 0.3),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Close button & 'Reflection' badge
-          Row(
-            children: [
-              IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.close, size: 20),
-                color: AppColors.onSurfaceVariant,
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-              ),
-              const SizedBox(width: 8),
-              Row(
-                children: [
-                  Container(
-                    width: 6,
-                    height: 6,
-                    decoration: const BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    'REFLECTION',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.2,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-          // Word counter & Save Entry Button
-          Row(
-            children: [
-              Text(
-                '$_wordCount word${_wordCount == 1 ? '' : 's'}',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  color: AppColors.outline,
-                ),
-              ),
-              const SizedBox(width: 12),
-              ElevatedButton(
-                onPressed: _isSaving ? null : _saveEntry,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.onPrimary,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  elevation: 1,
-                ),
-                child: Text(
-                  _isSaving ? 'Saved!' : 'Save Entry',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+            // Top Row: Close, Date, & Save
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 15),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Today's Prompt Banner
-  Widget _buildPromptCard() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainer.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.outlineVariant.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.auto_awesome,
-                size: 14,
-                color: AppColors.primary,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                "TODAY'S PROMPT",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.1,
-                  color: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            widget.initialPrompt,
-            style: GoogleFonts.literata(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              height: 1.35,
-              color: AppColors.onSurface,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Mood selector horizontal chip row
-  Widget _buildMoodSelectorRow() {
-    return Row(
-      children: [
-        Text(
-          'Mood: ',
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            color: AppColors.outline,
-          ),
-        ),
-        const SizedBox(width: 6),
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            child: Row(
-              children: _moods.map((m) {
-                final isSelected = m['name'] == _selectedMood;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _selectedMood = m['name']!;
-                      });
-                    },
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? AppColors.secondaryContainer.withValues(alpha: 0.5)
-                            : AppColors.surfaceContainer,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: isSelected
-                              ? AppColors.primary.withValues(alpha: 0.5)
-                              : AppColors.outlineVariant.withValues(alpha: 0.4),
-                          width: 1,
-                        ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'New Journal Entry',
+                      style: TextStyle(
+                        color: AppColors.onSurface,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
                       ),
+                    ),
+                    const SizedBox(height: 2),
+                    InkWell(
+                      onTap: _pickEntryDate,
+                      borderRadius: BorderRadius.circular(8),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(m['emoji']!, style: const TextStyle(fontSize: 12)),
+                          Icon(Icons.calendar_today_rounded, size: 11, color: AppColors.primary),
                           const SizedBox(width: 4),
                           Text(
-                            m['name']!,
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                              color: isSelected ? AppColors.primary : AppColors.onSurfaceVariant,
+                            '${_entryDate.month}/${_entryDate.day}/${_entryDate.year}',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Freeform Writing Textarea
-  Widget _buildWritingArea() {
-    return Container(
-      constraints: const BoxConstraints(minHeight: 140),
-      child: TextField(
-        controller: _textController,
-        autofocus: true,
-        maxLines: null,
-        minLines: 5,
-        style: GoogleFonts.literata(
-          fontSize: 16,
-          height: 1.6,
-          color: AppColors.onSurface,
-        ),
-        decoration: InputDecoration(
-          hintText: 'Pour your thoughts freely... Let this moment belong entirely to you.',
-          hintStyle: GoogleFonts.literata(
-            fontSize: 15,
-            fontStyle: FontStyle.italic,
-            color: AppColors.outline.withValues(alpha: 0.6),
-          ),
-          border: InputBorder.none,
-          isDense: true,
-          contentPadding: EdgeInsets.zero,
-        ),
-      ),
-    );
-  }
-
-  /// Attached Photo Memory Card
-  Widget _buildPhotoAttachment() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                const Icon(
-                  Icons.image,
-                  size: 15,
-                  color: AppColors.primary,
+                  ],
                 ),
-                const SizedBox(width: 6),
-                Text(
-                  'Attached Memory',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
-                    color: AppColors.outline,
+                ElevatedButton(
+                  onPressed: _handleSave,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.onPrimary,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                   ),
+                  child: const Text('Save', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  _showPhotoAttachment = false;
-                });
-              },
-              child: Row(
-                children: [
-                  const Icon(Icons.close, size: 13, color: AppColors.outline),
-                  const SizedBox(width: 2),
-                  Text(
-                    'Remove',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11,
-                      color: AppColors.outline,
+            const Divider(color: Colors.white12, height: 24),
+
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Mood check-in
+                    Text(
+                      'HOW ARE YOU FEELING?',
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Row(
+                        children: MoodItem.defaultMoods.map((mood) {
+                          final isSelected = _selectedMood.label == mood.label;
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ChoiceChip(
+                              label: Text('${mood.emoji} ${mood.label}'),
+                              selected: isSelected,
+                              selectedColor: mood.color.withValues(alpha: 0.3),
+                              backgroundColor: AppColors.surfaceContainerHigh,
+                              labelStyle: TextStyle(
+                                color: isSelected ? mood.color : AppColors.onSurfaceVariant,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                              side: BorderSide(
+                                color: isSelected ? mood.color : Colors.white12,
+                              ),
+                              onSelected: (_) {
+                                setState(() {
+                                  _selectedMood = mood;
+                                });
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+
+                    // Title Field
+                    TextField(
+                      controller: _titleController,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.onSurface,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Entry Title (optional)...',
+                        hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 20),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Body Field
+                    TextField(
+                      controller: _contentController,
+                      maxLines: 6,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: AppColors.onSurface,
+                        height: 1.5,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Write down your thoughts, intentions, or what is on your mind today...',
+                        hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 15),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Media Action Bar: Add Photos & Voice Memos
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceContainerHigh,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          // Add Photo Action
+                          InkWell(
+                            onTap: _showAddPhotoSheet,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.add_photo_alternate_rounded,
+                                      size: 18, color: AppColors.primary),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    _attachedImages.isEmpty
+                                        ? 'Add Photo'
+                                        : 'Photos (${_attachedImages.length})',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.onSurface,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(width: 1, height: 20, color: Colors.white12),
+                          // Voice Memo Action
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _isRecording = true;
+                              });
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.mic_rounded,
+                                      size: 18, color: const Color(0xFFE05A47)),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    _attachedMemos.isEmpty
+                                        ? 'Voice Memo'
+                                        : 'Memos (${_attachedMemos.length})',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.onSurface,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Active Voice Recorder Panel
+                    if (_isRecording)
+                      VoiceMemoRecorderWidget(
+                        onRecorded: (memo) {
+                          setState(() {
+                            _attachedMemos.add(memo);
+                            _isRecording = false;
+                          });
+                        },
+                        onCancel: () {
+                          setState(() {
+                            _isRecording = false;
+                          });
+                        },
+                      ),
+
+                    // Attached Voice Memos List
+                    if (_attachedMemos.isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        'ATTACHED VOICE MEMOS',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      ..._attachedMemos.map((memo) {
+                        return VoiceMemoPlayerWidget(
+                          memo: memo,
+                          onDelete: () {
+                            setState(() {
+                              _attachedMemos.remove(memo);
+                            });
+                          },
+                        );
+                      }),
+                    ],
+
+                    // Attached Pictures Preview Strip
+                    if (_attachedImages.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        'ATTACHED PICTURES',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 90,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _attachedImages.length,
+                          separatorBuilder: (_, _) => const SizedBox(width: 8),
+                          itemBuilder: (context, index) {
+                            final imgUrl = _attachedImages[index];
+                            return Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.network(
+                                    imgUrl,
+                                    width: 90,
+                                    height: 90,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, _, _) => Container(
+                                      width: 90,
+                                      height: 90,
+                                      color: AppColors.surfaceContainerHigh,
+                                      child: const Icon(Icons.photo_outlined),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 4,
+                                  right: 4,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _attachedImages.removeAt(index);
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(3),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withValues(alpha: 0.7),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(Icons.close_rounded,
+                                          size: 14, color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 20),
+
+                    // Gratitude Section
+                    Text(
+                      'GRATITUDE CHECK-IN (OPTIONAL)',
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _gratitudeController,
+                            style: TextStyle(color: AppColors.onSurface, fontSize: 14),
+                            decoration: InputDecoration(
+                              hintText: 'e.g. A peaceful morning walk...',
+                              hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
+                              filled: true,
+                              fillColor: AppColors.surfaceContainerHigh,
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                            onSubmitted: (_) => _addGratitude(),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          onPressed: _addGratitude,
+                          icon: Icon(Icons.add_circle_rounded, color: AppColors.primary),
+                        ),
+                      ],
+                    ),
+                    if (_gratitudeItems.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        children: _gratitudeItems.map((item) {
+                          return Chip(
+                            backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                            label: Text(item,
+                                style: TextStyle(color: AppColors.onSurface, fontSize: 12)),
+                            onDeleted: () {
+                              setState(() {
+                                _gratitudeItems.remove(item);
+                              });
+                            },
+                            deleteIconColor: AppColors.onSurfaceVariant,
+                            side: BorderSide.none,
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Stack(
-            children: [
-              Container(
-                height: 130,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.surfaceContainerHigh,
-                      AppColors.secondaryContainer.withValues(alpha: 0.4),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Image.network(
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuCcz_Kwpxs_a3yA_du6DCpBKo5hDhsUls30X2Z2m_kC66HlzGEmB2_UM86u5wKBP2ILwk4jg0KY9gQsQ9lwGpAt8wB9PIddXTVE15wyaE0-RKHf7sTWX_m9eoW4kcqCiCUX248TrBh5fefYK4g0KrP8SEfCZrValT8z55cgJkRBlkWh9da8aPsLHAIZVQtDlLOOfoQRBbG7B9GyDDIq8Xei8qWtxxrQzhkCJFzLxGfgi2aJlVDBTZgm',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Center(
-                    child: Icon(
-                      Icons.landscape_outlined,
-                      size: 40,
-                      color: AppColors.primary.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.black.withValues(alpha: 0.7),
-                        Colors.transparent,
-                      ],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                    ),
-                  ),
-                  child: Text(
-                    'Quiet dawn shoreline • 06:45 AM',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.9),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Voice Memo Recording Banner
-  Widget _buildVoiceRecordingBanner() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.secondaryContainer.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.4),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 10,
-                height: 10,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Recording Voice Memo...',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  Text(
-                    '${_formatTimer(_recordingSeconds)} • Waveform active',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11,
-                      color: AppColors.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-          // Stop Recording button
-          InkWell(
-            onTap: _toggleVoiceRecording,
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: const BoxDecoration(
-                color: AppColors.surfaceContainerHigh,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.stop,
-                size: 18,
-                color: AppColors.primary,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Modal Action Dock / Footer Toolbar
-  Widget _buildFooterToolbar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest.withValues(alpha: 0.9),
-        border: Border(
-          top: BorderSide(
-            color: AppColors.outlineVariant.withValues(alpha: 0.3),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              // Formatting button
-              IconButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Formatting options'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.format_size, size: 20),
-                color: AppColors.onSurfaceVariant,
-              ),
-
-              // Add / Toggle Voice Memo
-              TextButton.icon(
-                onPressed: _toggleVoiceRecording,
-                style: TextButton.styleFrom(
-                  foregroundColor: _isVoiceRecording ? AppColors.primary : AppColors.onSurfaceVariant,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                ),
-                icon: const Icon(Icons.mic, size: 19),
-                label: Text(
-                  'Add Voice',
-                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
-                ),
-              ),
-
-              // Add / Toggle Photo
-              TextButton.icon(
-                onPressed: () {
-                  setState(() {
-                    _showPhotoAttachment = !_showPhotoAttachment;
-                  });
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: _showPhotoAttachment ? AppColors.primary : AppColors.onSurfaceVariant,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                ),
-                icon: const Icon(Icons.add_photo_alternate, size: 19),
-                label: Text(
-                  'Add Picture',
-                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
-                ),
-              ),
-            ],
-          ),
-
-          // Privacy lock icon
-          const Padding(
-            padding: EdgeInsets.only(right: 6),
-            child: Icon(
-              Icons.lock,
-              size: 18,
-              color: AppColors.outline,
-            ),
-          ),
-        ],
       ),
     );
   }

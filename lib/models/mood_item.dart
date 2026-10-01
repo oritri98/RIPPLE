@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 
-/// MoodItem represents an emotional check-in option.
-/// 
-/// BEGINNER TIP:
-/// We bundle the name, icon, and description together so we can
-/// easily loop through a list of moods and display them on screen!
 class MoodItem {
-  final String name;
-  final IconData icon;
-  final String description;
+  final String label;
+  final String emoji;
+  final Color color;
 
   const MoodItem({
-    required this.name,
-    required this.icon,
-    required this.description,
+    required this.label,
+    required this.emoji,
+    required this.color,
   });
+
+  static const List<MoodItem> defaultMoods = [
+    MoodItem(label: 'Calm', emoji: '🌿', color: Color(0xFF81B29A)),
+    MoodItem(label: 'Reflective', emoji: '✨', color: Color(0xFFFEC486)),
+    MoodItem(label: 'Grateful', emoji: '💛', color: Color(0xFFFFB689)),
+    MoodItem(label: 'Energetic', emoji: '⚡', color: Color(0xFFE0A96D)),
+    MoodItem(label: 'Anxious', emoji: '🌊', color: Color(0xFF9D8E81)),
+  ];
 }

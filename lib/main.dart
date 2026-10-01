@@ -1,40 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'screens/navigation/main_navigation_screen.dart';
+import 'screens/login_screen.dart';
 import 'theme/app_theme.dart';
+import 'theme/theme_manager.dart';
 
-void main() {
-  // Ensure Flutter engine is initialized before running the app
-  WidgetsFlutterBinding.ensureInitialized();
+void main() => runApp(const MyApp());
 
-  // Set system status bar style to match our deep dark theme
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: AppColors.background,
-      systemNavigationBarIconBrightness: Brightness.light,
-    ),
-  );
-
-  runApp(const RippleApp());
-}
-
-/// RippleApp is the root widget of the application.
-/// 
-/// BEGINNER TIP:
-/// This sets up MaterialApp with our custom dark theme from `AppTheme`
-/// and launches `MainNavigationScreen` as the shell.
-class RippleApp extends StatelessWidget {
-  const RippleApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Ripple',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      home: const MainNavigationScreen(),
+    return ListenableBuilder(
+      listenable: ThemeManager.instance,
+      builder: (context, _) {
+        final isLight = ThemeManager.instance.isLight;
+
+        return MaterialApp(
+          title: 'Ripple',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: isLight ? ThemeMode.light : ThemeMode.dark,
+          home: const LoginScreen(),
+        );
+      },
     );
   }
 }

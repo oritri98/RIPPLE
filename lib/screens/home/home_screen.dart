@@ -1,62 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../theme/app_theme.dart';
+import '../../constants/app_colors.dart';
+import '../../models/user_goal_session.dart';
+import '../../widgets/liquid_glass.dart';
+import '../category_selection_screen.dart';
 import 'widgets/ambient_audio_pill.dart';
 import 'widgets/daily_prompt_card.dart';
 import 'widgets/task_list_section.dart';
 import 'widgets/yesterday_note_card.dart';
 
-/// HomeScreen is the primary daily dashboard for Ripple.
-/// 
-/// BEGINNER TIP:
-/// Updated to v2: Much more realistic, serene, and decluttered layout.
-/// Features a discreet ambient audio chip, unified tasks card, and quiet notes.
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final UserGoalSession? session;
+
+  const HomeScreen({
+    super.key,
+    this.session,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: _buildAppBar(context),
-      body: SingleChildScrollView(
+      body: LiquidBackground(
+        child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Date indicator row + Discreet Ambient Audio Pill
+            // 1. Date indicator row + Ambient Audio Pill
             _buildDateAndAudioRow(),
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
 
-            // 2. Greeting & Morning Reminder
+            // 2. Greeting
             _buildGreeting(),
             const SizedBox(height: 22),
 
-            // 3. Elevated, Quiet Daily Prompt Card
+            // 3. Daily Prompt Card
             const DailyPromptCard(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 22),
 
-            // 4. Decluttered Today's Intentions (Grouped Tasks List)
-            const TaskListSection(),
-            const SizedBox(height: 24),
+            // 4. Today's Intentions & Active Goals
+            TaskListSection(session: session),
+            const SizedBox(height: 22),
 
-            // 5. Echoes from Yesterday (Discreet Note Card)
+            // 5. Explore Domain Goals Banner
+            _buildExploreHubCard(context),
+            const SizedBox(height: 22),
+
+            // 6. Echoes from Yesterday
             const YesterdayNoteCard(),
-            
-            // Extra bottom spacing so content scrolls cleanly past floating nav & FAB
+
+            // Bottom space for floating nav bar
             const SizedBox(height: 100),
           ],
         ),
       ),
+      ),
     );
   }
 
-  /// App Bar with Logo, Title, Filter, and Profile
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      titleSpacing: 18,
+      titleSpacing: 20,
       title: Row(
         children: [
           Container(
@@ -70,8 +77,8 @@ class HomeScreen extends StatelessWidget {
                 width: 1,
               ),
             ),
-            child: const Icon(
-              Icons.all_inclusive,
+            child: Icon(
+              Icons.water_drop_rounded,
               size: 20,
               color: AppColors.primary,
             ),
@@ -82,16 +89,16 @@ class HomeScreen extends StatelessWidget {
             children: [
               Text(
                 'Ripple',
-                style: GoogleFonts.literata(
+                style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold,
                   color: AppColors.primary,
-                  letterSpacing: -0.5,
+                  letterSpacing: -0.3,
                 ),
               ),
               Text(
                 'Today',
-                style: GoogleFonts.plusJakartaSans(
+                style: TextStyle(
                   fontSize: 11,
                   color: AppColors.onSurfaceVariant,
                 ),
@@ -101,45 +108,25 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       actions: [
+        const ThemeToggleButton(),
+        const SizedBox(width: 6),
         IconButton(
           onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Filter options'),
-                duration: Duration(seconds: 1),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CategorySelectionScreen(session: session),
               ),
             );
           },
-          icon: const Icon(
-            Icons.filter_list,
-            color: AppColors.onSurfaceVariant,
-          ),
+          icon: Icon(Icons.explore_outlined, color: AppColors.onSurfaceVariant),
+          tooltip: 'Explore Goal Domains',
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 16),
-          child: Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.surfaceContainerHigh,
-              border: Border.all(
-                color: AppColors.primary.withValues(alpha: 0.4),
-                width: 1.5,
-              ),
-            ),
-            child: const Icon(
-              Icons.person_outline,
-              size: 20,
-              color: AppColors.onSurface,
-            ),
-          ),
-        ),
+        const SizedBox(width: 8),
       ],
     );
   }
 
-  /// Date indicator on left + Ambient Audio Pill on right
   Widget _buildDateAndAudioRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -149,15 +136,15 @@ class HomeScreen extends StatelessWidget {
             Container(
               width: 6,
               height: 6,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
             ),
             const SizedBox(width: 8),
             Text(
-              'WEDNESDAY, OCT 24',
-              style: GoogleFonts.plusJakartaSans(
+              'TODAY',
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.2,
@@ -166,38 +153,101 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-
-        // Discreet ambient audio pill
         const AmbientAudioPill(),
       ],
     );
   }
 
-  /// Morning Greeting Text
   Widget _buildGreeting() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Good morning, Milena.',
-          style: GoogleFonts.literata(
-            fontSize: 26,
-            fontWeight: FontWeight.w500,
+          'Good morning.',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
             color: AppColors.onSurface,
             letterSpacing: -0.5,
           ),
         ),
         const SizedBox(height: 2),
         Text(
-          'Take a deep breath.',
-          style: GoogleFonts.literata(
-            fontSize: 22,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.w400,
+          'Take a deep breath and start your journey.',
+          style: TextStyle(
+            fontSize: 16,
             color: AppColors.primary,
+            fontWeight: FontWeight.w400,
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildExploreHubCard(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CategorySelectionScreen(session: session),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceContainerHigh,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.primary.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.tune_rounded, color: AppColors.primary),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Explore Goal Domains',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Set milestones for Career, Education & Health',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 14,
+              color: AppColors.onSurfaceVariant,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

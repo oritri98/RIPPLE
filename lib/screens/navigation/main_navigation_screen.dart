@@ -1,55 +1,65 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
+import '../../constants/app_colors.dart';
+import '../../models/user_goal_session.dart';
 import '../../widgets/bottom_nav_bar.dart';
+import '../events/events_screen.dart';
 import '../home/home_screen.dart';
+import '../insights/insights_screen.dart';
 import '../journal/journal_screen.dart';
 import '../journal/widgets/journal_entry_modal.dart';
 import '../tasks/tasks_screen.dart';
-import '../insights/insights_screen.dart';
 
-/// MainNavigationScreen is the shell that manages tab switching.
-/// 
-/// BEGINNER TIP:
-/// Using an `IndexedStack` keeps each screen's state alive when you
-/// switch between tabs, so you don't lose scroll positions or typed notes!
 class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
+  final UserGoalSession? session;
+  final int initialIndex;
+
+  const MainNavigationScreen({
+    super.key,
+    this.session,
+    this.initialIndex = 0,
+  });
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex;
+  late UserGoalSession _session;
 
-  // The 4 main destinations in Ripple
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    JournalScreen(),
-    TasksScreen(),
-    InsightsScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+    _session = widget.session ?? UserGoalSession();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final screens = [
+      HomeScreen(session: _session),
+      const JournalScreen(),
+      EventsScreen(session: _session),
+      TasksScreen(session: _session),
+      InsightsScreen(session: _session),
+    ];
+
     return Scaffold(
       backgroundColor: AppColors.background,
-      
-      // Floating Action Button for Quick Capture / Stylus
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      extendBody: true,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 24),
+        padding: const EdgeInsets.only(bottom: 76, right: 6),
         child: FloatingActionButton(
           onPressed: () => showJournalEntryModal(context),
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.onPrimary,
           shape: const CircleBorder(),
           elevation: 6,
-          child: const Icon(Icons.edit, size: 24),
+          tooltip: 'Quick Journal Entry',
+          child: const Icon(Icons.edit_outlined, size: 24),
         ),
       ),
-
-      // Floating Capsule Navigation Bar
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _currentIndex,
         onTap: (newIndex) {
@@ -58,11 +68,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           });
         },
       ),
-
-      // Displays the selected screen
       body: IndexedStack(
         index: _currentIndex,
-        children: _screens,
+        children: screens,
       ),
     );
   }

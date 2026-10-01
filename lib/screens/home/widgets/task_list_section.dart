@@ -1,308 +1,305 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../models/task_item.dart';
-import '../../../theme/app_theme.dart';
+import '../../../constants/app_colors.dart';
+import '../../../models/user_goal_session.dart';
 
-/// TaskListSection displays the decluttered, airy tasks list.
-/// 
-/// BEGINNER TIP:
-/// In v2, tasks are organized inside a single unified card with clean
-/// hairline dividers and circular checkmarks, giving a clean notebook feel.
 class TaskListSection extends StatefulWidget {
-  const TaskListSection({super.key});
+  final UserGoalSession? session;
+
+  const TaskListSection({
+    super.key,
+    this.session,
+  });
 
   @override
   State<TaskListSection> createState() => _TaskListSectionState();
 }
 
 class _TaskListSectionState extends State<TaskListSection> {
-  // Tasks list matching the Stitch v2 mockup
-  final List<TaskItem> _tasks = [
-    TaskItem(
-      id: '1',
-      title: 'Morning breathwork & intention setting',
-      tag: 'Wellness',
-      time: '07:15',
-      isCompleted: true,
-    ),
-    TaskItem(
-      id: '2',
-      title: 'Draft chapter 3 notes & outline review',
-      tag: 'Writing',
-      time: '10:30',
-      isCompleted: false,
-    ),
-    TaskItem(
-      id: '3',
-      title: 'Review studio acoustic treatments proposal',
-      tag: 'Project',
-      time: '14:00',
-      isCompleted: true,
-    ),
-    TaskItem(
-      id: '4',
-      title: 'Forest walk without digital devices',
-      tag: 'Mindfulness',
-      time: '17:00',
-      isCompleted: false,
-    ),
-    TaskItem(
-      id: '5',
-      title: 'Evening tea reflection & gratitude log',
-      tag: 'Reflection',
-      time: '20:00',
-      isCompleted: false,
-    ),
+  final TextEditingController _intentionController = TextEditingController();
+
+  final List<Map<String, dynamic>> _defaultTasks = [
+    {'title': 'Deep focus study & practice', 'done': false, 'tag': 'Career'},
+    {'title': 'Review study routine / lecture notes', 'done': true, 'tag': 'Education'},
+    {'title': '15 mins mindfulness & evening stretch', 'done': false, 'tag': 'Health'},
   ];
 
-  void _toggleTask(TaskItem task) {
-    setState(() {
-      task.isCompleted = !task.isCompleted;
-    });
+  @override
+  void dispose() {
+    _intentionController.dispose();
+    super.dispose();
   }
 
-  void _showAddTaskDialog() {
-    final controller = TextEditingController();
+  void _showAddIntentionDialog() {
+    _intentionController.clear();
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surfaceContainer,
-        title: Text(
-          'Add New Task',
-          style: GoogleFonts.literata(color: AppColors.onSurface),
-        ),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          style: GoogleFonts.plusJakartaSans(color: AppColors.onSurface),
-          decoration: InputDecoration(
-            hintText: 'e.g. Read 15 minutes of poetry',
-            hintStyle: GoogleFonts.plusJakartaSans(color: AppColors.outline),
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.outlineVariant),
-            ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.primary),
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: AppColors.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(color: AppColors.primary, width: 1.2),
+          ),
+          title: Text(
+            'Add Today\'s Intention',
+            style: TextStyle(
+              color: AppColors.onSurface,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.plusJakartaSans(color: AppColors.onSurfaceVariant),
+          content: TextField(
+            controller: _intentionController,
+            autofocus: true,
+            style: TextStyle(color: AppColors.onSurface),
+            decoration: InputDecoration(
+              hintText: 'e.g. Finish reading Chapter 3',
+              hintStyle: TextStyle(color: AppColors.textMuted),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.white24),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColors.primary),
+              ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              if (controller.text.trim().isNotEmpty) {
-                setState(() {
-                  _tasks.add(
-                    TaskItem(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
-                      title: controller.text.trim(),
-                      tag: 'Personal',
-                      time: 'Today',
-                      isCompleted: false,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text('Cancel', style: TextStyle(color: AppColors.onSurfaceVariant)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final text = _intentionController.text.trim();
+                if (text.isNotEmpty) {
+                  setState(() {
+                    if (widget.session != null) {
+                      widget.session!.addCustomGoal(text, category: 'Career');
+                    } else {
+                      _defaultTasks.add({'title': text, 'done': false, 'tag': 'Focus'});
+                    }
+                  });
+                  Navigator.pop(dialogContext);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.onPrimary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child: const Text('Add Intention'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Color _getTagColor(String tag) {
+    switch (tag) {
+      case 'Education':
+        return AppColors.educationAccent;
+      case 'Health':
+        return AppColors.healthAccent;
+      case 'Career':
+      default:
+        return AppColors.careerAccent;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final session = widget.session;
+    final hasSessionGoals = session != null && session.goalItems.isNotEmpty;
+
+    final totalCount = hasSessionGoals
+        ? session.goalItems.length
+        : _defaultTasks.length;
+    final completedCount = hasSessionGoals
+        ? session.goalItems.where((g) => g.isCompleted).length
+        : _defaultTasks.where((t) => t['done'] as bool).length;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainer,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: Colors.white10,
+          width: 1.2,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Today\'s Intentions',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.onSurface,
                     ),
-                  );
-                });
-                Navigator.pop(ctx);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.onPrimary,
-            ),
-            child: const Text('Add'),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '$completedCount/$totalCount',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              IconButton(
+                onPressed: _showAddIntentionDialog,
+                icon: Icon(Icons.add_circle_outline_rounded, color: AppColors.primary),
+                tooltip: 'Add Intention',
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
+              ),
+            ],
           ),
+          const SizedBox(height: 14),
+
+          // Progress Bar
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: LinearProgressIndicator(
+              value: totalCount > 0 ? (completedCount / totalCount) : 0,
+              minHeight: 6,
+              backgroundColor: AppColors.surfaceContainerHigh,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          if (hasSessionGoals)
+            ...session.goalItems.map((goal) {
+              return _buildGoalRow(
+                title: goal.title,
+                isDone: goal.isCompleted,
+                tag: goal.category,
+                onToggle: () {
+                  setState(() {
+                    session.toggleItemCompletion(goal.id);
+                  });
+                },
+              );
+            })
+          else
+            ..._defaultTasks.asMap().entries.map((entry) {
+              final idx = entry.key;
+              final task = entry.value;
+              return _buildGoalRow(
+                title: task['title'] as String,
+                isDone: task['done'] as bool,
+                tag: task['tag'] as String,
+                onToggle: () {
+                  setState(() {
+                    _defaultTasks[idx]['done'] = !(_defaultTasks[idx]['done'] as bool);
+                  });
+                },
+              );
+            }),
         ],
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final completedCount = _tasks.where((t) => t.isCompleted).length;
-    final totalCount = _tasks.length;
+  Widget _buildGoalRow({
+    required String title,
+    required bool isDone,
+    required String tag,
+    required VoidCallback onToggle,
+  }) {
+    final tagColor = _getTagColor(tag);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Header row: "Tasks" + "2 of 5" pill + "+ Add Task" button
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Text(
-                  'Tasks',
-                  style: GoogleFonts.literata(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.onSurface,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceContainer,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    '$completedCount of $totalCount',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.outline,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            InkWell(
-              onTap: _showAddTaskDialog,
-              borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.add,
-                      size: 18,
-                      color: AppColors.primary,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Add Task',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-
-        // Grouped Card Container
-        Container(
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: InkWell(
+        onTap: onToggle,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: AppColors.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(16),
+            color: isDone ? AppColors.surfaceContainerLow : AppColors.surfaceContainerHigh,
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: AppColors.outlineVariant.withValues(alpha: 0.3),
+              color: isDone ? Colors.transparent : Colors.white10,
               width: 1,
             ),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _tasks.length,
-            separatorBuilder: (_, _) => Divider(
-              height: 1,
-              thickness: 1,
-              color: AppColors.outlineVariant.withValues(alpha: 0.25),
-            ),
-            itemBuilder: (context, index) {
-              final task = _tasks[index];
-              return _buildTaskRow(task);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Individual Task Row inside the grouped card
-  Widget _buildTaskRow(TaskItem task) {
-    final isAccent = task.tag == 'Writing';
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // Circular Checkbox
-          GestureDetector(
-            onTap: () => _toggleTask(task),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: task.isCompleted ? AppColors.primary : Colors.transparent,
-                border: Border.all(
-                  color: task.isCompleted ? AppColors.primary : AppColors.outline,
-                  width: 1.5,
+          child: Row(
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: isDone ? AppColors.primary : Colors.transparent,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isDone ? AppColors.primary : Colors.white38,
+                    width: 2,
+                  ),
+                ),
+                child: isDone
+                    ? Icon(
+                        Icons.check,
+                        size: 14,
+                        color: AppColors.onPrimary,
+                      )
+                    : null,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDone ? AppColors.outline : AppColors.onSurface,
+                    decoration: isDone ? TextDecoration.lineThrough : null,
+                    decorationColor: AppColors.outline,
+                    fontWeight: isDone ? FontWeight.normal : FontWeight.w500,
+                  ),
                 ),
               ),
-              child: task.isCompleted
-                  ? const Icon(
-                      Icons.check,
-                      size: 13,
-                      color: AppColors.onPrimary,
-                    )
-                  : null,
-            ),
-          ),
-          const SizedBox(width: 12),
-
-          // Task title & category tag
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  task.title,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: task.isCompleted
-                        ? AppColors.outline
-                        : AppColors.onSurface,
-                    decoration: task.isCompleted
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: tagColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  task.tag,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
-                    color: isAccent && !task.isCompleted
-                        ? AppColors.primary
-                        : AppColors.outline,
+                child: Text(
+                  tag,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: tagColor,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-
-          // Time timestamp on right
-          const SizedBox(width: 8),
-          Text(
-            task.time,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: isAccent && !task.isCompleted
-                  ? AppColors.primary
-                  : AppColors.outline,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
