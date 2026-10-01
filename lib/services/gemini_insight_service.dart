@@ -89,9 +89,9 @@ class GeminiInsightService extends ChangeNotifier {
 
         try {
           final request = await client.postUrl(url);
-          request.headers.set('Content-Type', 'application/json');
+          request.headers.set('Content-Type', 'application/json; charset=utf-8');
           request.headers.set('x-goog-api-key', cleanKey);
-          request.write(requestBody);
+          request.add(utf8.encode(requestBody));
 
           final response = await request.close();
           final responseBody = await response.transform(utf8.decoder).join();
@@ -250,9 +250,9 @@ class GeminiInsightService extends ChangeNotifier {
 
         try {
           final request = await client.postUrl(url);
-          request.headers.set('Content-Type', 'application/json');
+          request.headers.set('Content-Type', 'application/json; charset=utf-8');
           request.headers.set('x-goog-api-key', cleanKey);
-          request.write(requestBody);
+          request.add(utf8.encode(requestBody));
 
           final response = await request.close();
           final responseBody = await response.transform(utf8.decoder).join();
