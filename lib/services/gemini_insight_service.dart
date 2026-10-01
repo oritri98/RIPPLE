@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/ai_insight_report.dart';
 import '../models/journal_entry.dart';
 
@@ -19,6 +20,9 @@ class GeminiInsightService extends ChangeNotifier {
     'gemini-3.1-flash-lite',
   ];
 
+  static const String _keyStorageKey = 'ripple_gemini_api_key';
+  SharedPreferences? _prefs;
+
   String? _apiKey;
   AiInsightReport? _currentReport;
   bool _isLoading = false;
@@ -29,6 +33,15 @@ class GeminiInsightService extends ChangeNotifier {
   AiInsightReport? get currentReport => _currentReport;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+
+  Future<void> init() async {
+    _prefs = await SharedPreferences.getInstance();
+    final savedKey = _prefs?.getString(_keyStorageKey);
+    if (savedKey != null && savedKey.isNotEmpty) {
+      _apiKey = sanitizeKey(savedKey);
+      notifyListeners();
+    }
+  }
 
   static String sanitizeKey(String raw) {
     String clean = raw
@@ -46,11 +59,13 @@ class GeminiInsightService extends ChangeNotifier {
   void setApiKey(String key) {
     _apiKey = sanitizeKey(key);
     _errorMessage = null;
+    _prefs?.setString(_keyStorageKey, _apiKey!);
     notifyListeners();
   }
 
   void clearApiKey() {
     _apiKey = null;
+    _prefs?.remove(_keyStorageKey);
     notifyListeners();
   }
 

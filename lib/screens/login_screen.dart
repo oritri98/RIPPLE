@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../widgets/liquid_glass.dart';
+import '../services/session_service.dart';
 import 'category_selection_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -55,11 +56,15 @@ class _LoginScreenState extends State<LoginScreen> {
     return emailErr == null && passErr == null;
   }
 
-  void _handleLogin() {
+  void _handleLogin() async {
     if (!_validateInputs()) {
       return;
     }
 
+    final email = _emailController.text.trim();
+    await SessionService.instance.login(email: email);
+
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

@@ -7,8 +7,12 @@ import 'package:ripple_flutter/screens/health_screen.dart';
 import 'package:ripple_flutter/models/journal_entry.dart';
 import 'package:ripple_flutter/models/mood_item.dart';
 import 'package:ripple_flutter/services/journal_service.dart';
+import 'package:ripple_flutter/services/session_service.dart';
 
 void main() {
+  setUp(() async {
+    await SessionService.instance.logout();
+  });
   testWidgets('Login Validation, Onboarding, and Main Navigation Smoke Test', (WidgetTester tester) async {
     // Set realistic mobile phone viewport
     tester.view.physicalSize = const Size(800, 1600);
@@ -319,6 +323,35 @@ void main() {
     // Test undo / restore
     JournalService.instance.restoreEntry(deleted);
     expect(JournalService.instance.entries.any((e) => e.id == 'test-pin-6'), isTrue);
+  });
+
+  testWidgets('Auto-login and session persistence works across app launches', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    // 1. Initially logged out -> launches LoginScreen
+    await SessionService.instance.logout();
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+    expect(find.text('Welcome to Ripple'), findsOneWidget);
+
+    // 2. Perform Login
+    await SessionService.instance.login(email: 'persisted@ripple.com');
+    await tester.pumpAndSettle();
+
+    // 3. Re-launch MyApp while logged in -> Auto-login skips LoginScreen directly to MainNavigationScreen
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+    expect(find.text('Welcome to Ripple'), findsNothing);
+    expect(find.text('Ripple'), findsOneWidget);
+    expect(find.text('Today'), findsWidgets);
+
+    // 4. Logout returns to LoginScreen
+    await SessionService.instance.logout();
+    await tester.pumpAndSettle();
+    expect(find.text('Welcome to Ripple'), findsOneWidget);
   });
 }
 

@@ -3,6 +3,8 @@ import '../../constants/app_colors.dart';
 import '../../models/user_goal_session.dart';
 import '../../widgets/liquid_glass.dart';
 import '../category_selection_screen.dart';
+import '../login_screen.dart';
+import '../../services/session_service.dart';
 import 'widgets/ambient_audio_pill.dart';
 import 'widgets/daily_prompt_card.dart';
 import 'widgets/task_list_section.dart';
@@ -121,6 +123,85 @@ class HomeScreen extends StatelessWidget {
           },
           icon: Icon(Icons.explore_outlined, color: AppColors.onSurfaceVariant),
           tooltip: 'Explore Goal Domains',
+        ),
+        PopupMenuButton<String>(
+          icon: CircleAvatar(
+            radius: 14,
+            backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+            child: Icon(Icons.person_outline_rounded, size: 16, color: AppColors.primary),
+          ),
+          color: AppColors.surfaceContainerLowest,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: Colors.white12),
+          ),
+          onSelected: (value) async {
+            if (value == 'logout') {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: AppColors.surfaceContainerLowest,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(color: Colors.white12),
+                  ),
+                  title: const Text('Log Out?'),
+                  content: const Text(
+                    'Are you sure you want to log out? Your journal reflections will remain safely saved on this device.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFE05A47),
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Log Out'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirm == true) {
+                await SessionService.instance.logout();
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    (route) => false,
+                  );
+                }
+              }
+            }
+          },
+          itemBuilder: (context) => [
+            if (SessionService.instance.userEmail != null)
+              PopupMenuItem(
+                enabled: false,
+                child: Text(
+                  SessionService.instance.userEmail!,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            PopupMenuItem(
+              value: 'logout',
+              child: Row(
+                children: const [
+                  Icon(Icons.logout_rounded, size: 18, color: Color(0xFFE05A47)),
+                  SizedBox(width: 8),
+                  Text('Log Out', style: TextStyle(color: Color(0xFFE05A47))),
+                ],
+              ),
+            ),
+          ],
         ),
         const SizedBox(width: 8),
       ],

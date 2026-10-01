@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../models/user_goal_session.dart';
+import '../../services/session_service.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../events/events_screen.dart';
 import '../home/home_screen.dart';
@@ -31,7 +32,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
-    _session = widget.session ?? UserGoalSession();
+    _session = widget.session ?? SessionService.instance.savedSession ?? UserGoalSession();
+    SessionService.instance.saveGoalSession(_session);
   }
 
   @override

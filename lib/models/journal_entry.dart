@@ -52,6 +52,48 @@ class JournalEntry {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'content': content,
+      'date': date.toIso8601String(),
+      'mood': mood.toMap(),
+      'tags': tags,
+      'gratitudeItems': gratitudeItems,
+      'images': images,
+      'voiceMemos': voiceMemos.map((vm) => vm.toMap()).toList(),
+      'isPinned': isPinned,
+    };
+  }
+
+  factory JournalEntry.fromMap(Map<String, dynamic> map) {
+    return JournalEntry(
+      id: map['id'] as String,
+      title: map['title'] as String,
+      content: map['content'] as String,
+      date: DateTime.parse(map['date'] as String),
+      mood: MoodItem.fromMap(map['mood'] as Map<String, dynamic>),
+      tags: (map['tags'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      gratitudeItems: (map['gratitudeItems'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      images: (map['images'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      voiceMemos: (map['voiceMemos'] as List<dynamic>?)
+              ?.map((vm) => VoiceMemoItem.fromMap(vm as Map<String, dynamic>))
+              .toList() ??
+          [],
+      isPinned: map['isPinned'] as bool? ?? false,
+    );
+  }
+
   static List<JournalEntry> sampleEntries = [
     JournalEntry(
       id: '1',
