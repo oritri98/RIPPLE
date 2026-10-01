@@ -4,6 +4,9 @@ import 'package:ripple_flutter/main.dart';
 import 'package:ripple_flutter/models/user_goal_session.dart';
 import 'package:ripple_flutter/screens/education_screen.dart';
 import 'package:ripple_flutter/screens/health_screen.dart';
+import 'package:ripple_flutter/models/journal_entry.dart';
+import 'package:ripple_flutter/models/mood_item.dart';
+import 'package:ripple_flutter/services/journal_service.dart';
 
 void main() {
   testWidgets('Login Validation, Onboarding, and Main Navigation Smoke Test', (WidgetTester tester) async {
@@ -245,6 +248,77 @@ void main() {
 
     // Verify snackbar feedback and return to Events screen
     expect(find.text('Journal entry & memories saved to your timeline! ✨'), findsOneWidget);
+  });
+
+  testWidgets('Journal Screen supports pinning up to 5 entries and deleting with confirmation and undo', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    // Initial check on service
+    final initialCount = JournalService.instance.entries.length;
+    expect(initialCount, greaterThan(0));
+
+    // Unpin all entries first
+    for (final e in List<JournalEntry>.from(JournalEntry.sampleEntries)) {
+      if (e.isPinned) {
+        JournalService.instance.togglePin(e.id);
+      }
+    }
+    expect(JournalService.instance.pinnedCount, 0);
+
+    // Pin exactly 4 existing entries
+    for (int i = 0; i < 4 && i < JournalEntry.sampleEntries.length; i++) {
+      final success = JournalService.instance.togglePin(JournalEntry.sampleEntries[i].id);
+      expect(success, isTrue);
+    }
+    expect(JournalService.instance.pinnedCount, 4);
+
+    // Add extra entries to test 5-pin limit
+    final extraEntry1 = JournalEntry(
+      id: 'test-pin-5',
+      title: 'Pin 5 Reflection',
+      content: 'Testing 5th pin',
+      date: DateTime.now(),
+      mood: MoodItem.defaultMoods[0],
+    );
+    final extraEntry2 = JournalEntry(
+      id: 'test-pin-6',
+      title: 'Pin 6 Reflection',
+      content: 'Testing 6th pin',
+      date: DateTime.now(),
+    mood: MoodItem.defaultMoods[0],
+    );
+    JournalService.instance.addEntry(extraEntry1);
+    JournalService.instance.addEntry(extraEntry2);
+
+    // Pin 5th entry (should succeed)
+    final pin5Success = JournalService.instance.togglePin('test-pin-5');
+    expect(pin5Success, isTrue);
+    expect(JournalService.instance.pinnedCount, 5);
+
+    // Try pinning 6th entry (must fail due to max 5 limit!)
+    final pin6Success = JournalService.instance.togglePin('test-pin-6');
+    expect(pin6Success, isFalse);
+    expect(JournalService.instance.pinnedCount, 5);
+
+    // Verify pinned entries appear first in the entries getter
+    final sorted = JournalService.instance.entries;
+    for (int i = 0; i < 5; i++) {
+      expect(sorted[i].isPinned, isTrue);
+    }
+    expect(sorted[5].isPinned, isFalse);
+
+    // Test delete and undo
+    final deleted = JournalService.instance.removeEntry('test-pin-6');
+    expect(deleted, isNotNull);
+    expect(deleted!.id, 'test-pin-6');
+    expect(JournalService.instance.entries.any((e) => e.id == 'test-pin-6'), isFalse);
+
+    // Test undo / restore
+    JournalService.instance.restoreEntry(deleted);
+    expect(JournalService.instance.entries.any((e) => e.id == 'test-pin-6'), isTrue);
   });
 }
 

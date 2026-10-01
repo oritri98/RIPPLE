@@ -11,6 +11,7 @@ class JournalEntry {
   final List<String> gratitudeItems;
   final List<String> images;
   final List<VoiceMemoItem> voiceMemos;
+  final bool isPinned;
 
   JournalEntry({
     required this.id,
@@ -22,7 +23,34 @@ class JournalEntry {
     this.gratitudeItems = const [],
     this.images = const [],
     this.voiceMemos = const [],
+    this.isPinned = false,
   });
+
+  JournalEntry copyWith({
+    String? id,
+    String? title,
+    String? content,
+    DateTime? date,
+    MoodItem? mood,
+    List<String>? tags,
+    List<String>? gratitudeItems,
+    List<String>? images,
+    List<VoiceMemoItem>? voiceMemos,
+    bool? isPinned,
+  }) {
+    return JournalEntry(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      date: date ?? this.date,
+      mood: mood ?? this.mood,
+      tags: tags ?? this.tags,
+      gratitudeItems: gratitudeItems ?? this.gratitudeItems,
+      images: images ?? this.images,
+      voiceMemos: voiceMemos ?? this.voiceMemos,
+      isPinned: isPinned ?? this.isPinned,
+    );
+  }
 
   static List<JournalEntry> sampleEntries = [
     JournalEntry(
@@ -50,6 +78,7 @@ class JournalEntry {
           ],
         ),
       ],
+      isPinned: true,
     ),
     JournalEntry(
       id: '2',
