@@ -196,7 +196,7 @@ class _GeminiKeyModalState extends State<GeminiKeyModal> {
                   Text(
                     '1. Open aistudio.google.com in your browser\n'
                     '2. Sign in with Google -> Tap "Get API key"\n'
-                    '3. Tap "Create API key" and copy the key (starts with "AIzaSy...")\n'
+                    '3. Tap "Create API key" and copy the key (starts with "AIzaSy..." or "AQ...")\n'
                     '4. Tap "Paste from Clipboard" below.',
                     style: TextStyle(
                       fontSize: 12,
@@ -252,7 +252,7 @@ class _GeminiKeyModalState extends State<GeminiKeyModal> {
               obscureText: _obscure,
               style: TextStyle(color: AppColors.onSurface, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'AIzaSy...',
+                hintText: 'Paste Gemini key (e.g. AQ... or AIzaSy...)',
                 hintStyle: TextStyle(color: AppColors.textMuted),
                 filled: true,
                 fillColor: AppColors.surfaceContainerHigh,

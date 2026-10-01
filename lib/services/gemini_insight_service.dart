@@ -12,6 +12,13 @@ class GeminiInsightService extends ChangeNotifier {
     _currentReport = AiInsightReport.sampleReport();
   }
 
+  static const List<String> _candidateModels = [
+    'gemini-3.5-flash',
+    'gemini-3.7-flash',
+    'gemini-flash-latest',
+    'gemini-3.1-flash-lite',
+  ];
+
   String? _apiKey;
   AiInsightReport? _currentReport;
   bool _isLoading = false;
@@ -24,12 +31,16 @@ class GeminiInsightService extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   static String sanitizeKey(String raw) {
-    return raw
+    String clean = raw
         .replaceAll(RegExp(r'[\r\n\t\s\u00A0\u200B\u200C\u200D\uFEFF]'), '')
         .replaceAll('"', '')
         .replaceAll("'", '')
         .replaceAll('`', '')
         .trim();
+    while (clean.endsWith('.') || clean.endsWith(',')) {
+      clean = clean.substring(0, clean.length - 1).trim();
+    }
+    return clean;
   }
 
   void setApiKey(String key) {
@@ -49,60 +60,74 @@ class GeminiInsightService extends ChangeNotifier {
     if (cleanKey.isEmpty) {
       return {'success': false, 'message': 'API key is empty.'};
     }
-    if (!cleanKey.startsWith('AIzaSy')) {
+    if (cleanKey.length < 20) {
       return {
         'success': false,
-        'message': 'Key format issue: Gemini API keys normally begin with "AIzaSy". Please check you did not copy a project name or ID.',
+        'message': 'Key is too short to be a valid Gemini API key.',
       };
     }
 
-    final url = Uri.parse(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$cleanKey',
-    );
-
-    final requestBody = jsonEncode({
-      'contents': [
-        {
-          'parts': [
-            {'text': 'Hello'}
-          ]
-        }
-      ],
-      'generationConfig': {'maxOutputTokens': 5}
-    });
-
     final client = HttpClient();
+    String lastServerError = '';
+
     try {
-      final request = await client.postUrl(url);
-      request.headers.set('Content-Type', 'application/json');
-      request.headers.set('x-goog-api-key', cleanKey);
-      request.write(requestBody);
+      for (final model in _candidateModels) {
+        final url = Uri.parse(
+          'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$cleanKey',
+        );
 
-      final response = await request.close();
-      final responseBody = await response.transform(utf8.decoder).join();
+        final requestBody = jsonEncode({
+          'contents': [
+            {
+              'parts': [
+                {'text': 'Hello'}
+              ]
+            }
+          ],
+          'generationConfig': {'maxOutputTokens': 5}
+        });
 
-      if (response.statusCode == 200) {
-        return {
-          'success': true,
-          'message': 'Connected to Gemini 1.5 Flash successfully! ✨',
-        };
-      } else {
-        String serverMsg = 'Status code ${response.statusCode}';
         try {
-          final errJson = jsonDecode(responseBody);
-          serverMsg = errJson['error']?['message'] ?? serverMsg;
-        } catch (_) {}
+          final request = await client.postUrl(url);
+          request.headers.set('Content-Type', 'application/json');
+          request.headers.set('x-goog-api-key', cleanKey);
+          request.write(requestBody);
 
-        if (serverMsg.contains('API key not valid')) {
-          return {
-            'success': false,
-            'message': 'Google reported: API key not valid. Please ensure you copied your key from Google AI Studio (aistudio.google.com).',
-          };
+          final response = await request.close();
+          final responseBody = await response.transform(utf8.decoder).join();
+
+          if (response.statusCode == 200) {
+            return {
+              'success': true,
+              'message': 'Connected to Google Gemini successfully! ✨ ($model)',
+            };
+          }
+
+          if (responseBody.contains('API_KEY_INVALID') ||
+              responseBody.contains('API key not valid')) {
+            return {
+              'success': false,
+              'message':
+                  'Google reported: API key not valid. Please check your key from Google AI Studio.',
+            };
+          }
+
+          try {
+            final errJson = jsonDecode(responseBody);
+            lastServerError =
+                errJson['error']?['message'] ?? 'Status ${response.statusCode}';
+          } catch (_) {
+            lastServerError = 'Status code ${response.statusCode}';
+          }
+        } catch (e) {
+          lastServerError = e.toString();
         }
-        return {'success': false, 'message': serverMsg};
       }
-    } catch (e) {
-      return {'success': false, 'message': 'Network error: $e'};
+
+      return {
+        'success': false,
+        'message': 'Connection test failed: $lastServerError',
+      };
     } finally {
       client.close();
     }
@@ -200,73 +225,89 @@ class GeminiInsightService extends ChangeNotifier {
     int entriesCount,
   ) async {
     final cleanKey = sanitizeKey(apiKey);
-    final url = Uri.parse(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$cleanKey',
-    );
-
-    final requestBody = jsonEncode({
-      'contents': [
-        {
-          'parts': [
-            {'text': prompt}
-          ]
-        }
-      ],
-      'generationConfig': {
-        'temperature': 0.7,
-        'responseMimeType': 'application/json',
-      }
-    });
-
     final client = HttpClient();
+    String lastError = '';
+
     try {
-      final request = await client.postUrl(url);
-      request.headers.set('Content-Type', 'application/json');
-      request.headers.set('x-goog-api-key', cleanKey);
-      request.write(requestBody);
+      for (final model in _candidateModels) {
+        final url = Uri.parse(
+          'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$cleanKey',
+        );
 
-      final response = await request.close();
-      final responseBody = await response.transform(utf8.decoder).join();
+        final requestBody = jsonEncode({
+          'contents': [
+            {
+              'parts': [
+                {'text': prompt}
+              ]
+            }
+          ],
+          'generationConfig': {
+            'temperature': 0.7,
+            'responseMimeType': 'application/json',
+          }
+        });
 
-      if (response.statusCode != 200) {
-        String errorMsg = 'Error (${response.statusCode})';
         try {
-          final errorJson = jsonDecode(responseBody);
-          errorMsg = errorJson['error']?['message'] ?? errorMsg;
-        } catch (_) {}
+          final request = await client.postUrl(url);
+          request.headers.set('Content-Type', 'application/json');
+          request.headers.set('x-goog-api-key', cleanKey);
+          request.write(requestBody);
 
-        if (errorMsg.contains('API key not valid')) {
-          throw Exception(
-            'API key is not valid. Please ensure you copied your key from Google AI Studio (aistudio.google.com).',
-          );
+          final response = await request.close();
+          final responseBody = await response.transform(utf8.decoder).join();
+
+          if (response.statusCode == 200) {
+            final jsonResponse = jsonDecode(responseBody);
+            final textContent = jsonResponse['candidates']?[0]?['content']
+                ?['parts']?[0]?['text'];
+
+            if (textContent == null || textContent.toString().trim().isEmpty) {
+              continue;
+            }
+
+            String cleanedJson = textContent.toString().trim();
+            if (cleanedJson.startsWith('```json')) {
+              cleanedJson = cleanedJson.substring(7);
+            } else if (cleanedJson.startsWith('```')) {
+              cleanedJson = cleanedJson.substring(3);
+            }
+            if (cleanedJson.endsWith('```')) {
+              cleanedJson =
+                  cleanedJson.substring(0, cleanedJson.length - 3);
+            }
+            cleanedJson = cleanedJson.trim();
+
+            final parsed = jsonDecode(cleanedJson) as Map<String, dynamic>;
+            parsed['analyzedAt'] = DateTime.now().toIso8601String();
+            parsed['entriesAnalyzedCount'] = entriesCount;
+
+            return AiInsightReport.fromMap(parsed);
+          }
+
+          if (responseBody.contains('API_KEY_INVALID') ||
+              responseBody.contains('API key not valid')) {
+            throw Exception(
+              'API key is not valid. Please check your key from Google AI Studio.',
+            );
+          }
+
+          try {
+            final errorJson = jsonDecode(responseBody);
+            lastError = errorJson['error']?['message'] ??
+                'Status ${response.statusCode}';
+          } catch (_) {
+            lastError = 'Status code ${response.statusCode}';
+          }
+        } catch (e) {
+          if (e.toString().contains('API key is not valid')) {
+            rethrow;
+          }
+          lastError = e.toString();
         }
-        throw Exception('Gemini: $errorMsg');
       }
 
-      final jsonResponse = jsonDecode(responseBody);
-      final textContent =
-          jsonResponse['candidates']?[0]?['content']?['parts']?[0]?['text'];
-
-      if (textContent == null || textContent.toString().trim().isEmpty) {
-        throw Exception('Gemini generated an empty response.');
-      }
-
-      String cleanedJson = textContent.toString().trim();
-      if (cleanedJson.startsWith('```json')) {
-        cleanedJson = cleanedJson.substring(7);
-      } else if (cleanedJson.startsWith('```')) {
-        cleanedJson = cleanedJson.substring(3);
-      }
-      if (cleanedJson.endsWith('```')) {
-        cleanedJson = cleanedJson.substring(0, cleanedJson.length - 3);
-      }
-      cleanedJson = cleanedJson.trim();
-
-      final parsed = jsonDecode(cleanedJson) as Map<String, dynamic>;
-      parsed['analyzedAt'] = DateTime.now().toIso8601String();
-      parsed['entriesAnalyzedCount'] = entriesCount;
-
-      return AiInsightReport.fromMap(parsed);
+      throw Exception('Gemini service temporarily unavailable: $lastError');
     } finally {
       client.close();
     }
