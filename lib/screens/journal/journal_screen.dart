@@ -164,34 +164,39 @@ class _JournalScreenState extends State<JournalScreen> {
           backgroundColor: AppColors.background,
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            titleSpacing: 20,
+            titleSpacing: 16,
             title: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  'Journal',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                Flexible(
+                  child: Text(
+                    'Journal',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
                 if (pinnedCount > 0) ...[
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.push_pin_rounded, size: 12, color: AppColors.primary),
-                        const SizedBox(width: 3),
+                        Icon(Icons.push_pin_rounded, size: 11, color: AppColors.primary),
+                        const SizedBox(width: 2),
                         Text(
                           '$pinnedCount/5',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 10,
                             fontWeight: FontWeight.bold,
                             color: AppColors.primary,
                           ),
@@ -332,89 +337,100 @@ class _JournalScreenState extends State<JournalScreen> {
         children: [
           // Mood, Pinned status & Header Controls Row
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Mood and optional PINNED badge
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: entry.mood.color.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(entry.mood.emoji, style: const TextStyle(fontSize: 12)),
-                        const SizedBox(width: 4),
-                        Text(
-                          entry.mood.label,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: entry.mood.color,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (entry.isPinned) ...[
-                    const SizedBox(width: 8),
+              // Mood and optional PINNED badge (wrapped so it never overflows)
+              Expanded(
+                child: Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.18),
+                        color: entry.mood.color.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: AppColors.primary.withValues(alpha: 0.35),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(entry.mood.emoji, style: const TextStyle(fontSize: 12)),
+                            const SizedBox(width: 4),
+                            Text(
+                              entry.mood.label,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: entry.mood.color,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.push_pin_rounded,
-                            size: 11,
-                            color: AppColors.primary,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            'PINNED',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
+                    if (entry.isPinned)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.18),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.35),
+                          ),
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.push_pin_rounded,
+                                size: 11,
+                                color: AppColors.primary,
+                              ),
+                              const SizedBox(width: 3),
+                              Text(
+                                'PINNED',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                   ],
-                ],
+                ),
               ),
+              const SizedBox(width: 8),
 
               // Date, quick pin button, and 3-dots menu
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (entry.images.isNotEmpty) ...[
                     Icon(Icons.photo_outlined, size: 14, color: AppColors.textMuted),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 3),
                     Text(
                       '${entry.images.length}',
                       style: TextStyle(fontSize: 11, color: AppColors.textMuted),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                   ],
                   if (entry.voiceMemos.isNotEmpty) ...[
                     Icon(Icons.mic_none_rounded, size: 14, color: const Color(0xFFE05A47)),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 3),
                     Text(
                       '${entry.voiceMemos.length}',
                       style: TextStyle(fontSize: 11, color: const Color(0xFFE05A47)),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                   ],
                   Text(
                     '${entry.date.month}/${entry.date.day}',
@@ -424,7 +440,7 @@ class _JournalScreenState extends State<JournalScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 2),
 
                   // Quick Pin/Unpin icon
                   IconButton(

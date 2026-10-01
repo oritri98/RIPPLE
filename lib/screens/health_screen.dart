@@ -253,15 +253,20 @@ class _HealthScreenState extends State<HealthScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'HABIT TARGETS',
-                    style: TextStyle(
-                      color: Color(0xFF81B29A),
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
+                  const Expanded(
+                    child: Text(
+                      'HABIT TARGETS',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Color(0xFF81B29A),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Text(
                     '$healthGoalsCount selected',
                     style: TextStyle(

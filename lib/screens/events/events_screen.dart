@@ -130,8 +130,9 @@ class _EventsScreenState extends State<EventsScreen> {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      titleSpacing: 20,
+      titleSpacing: 16,
       title: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 36,
@@ -147,26 +148,33 @@ class _EventsScreenState extends State<EventsScreen> {
             ),
           ),
           const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Events',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                  letterSpacing: -0.3,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Events',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                    letterSpacing: -0.3,
+                  ),
                 ),
-              ),
-              Text(
-                'Calendar & Memory Timeline',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.onSurfaceVariant,
+                Text(
+                  'Calendar & Memory Timeline',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -203,39 +211,48 @@ class _EventsScreenState extends State<EventsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Text(
-                '$monthName $year',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.onSurface,
-                ),
-              ),
-              const SizedBox(width: 8),
-              InkWell(
-                onTap: _goToToday,
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.18),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+          Expanded(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
                   child: Text(
-                    'Today',
+                    '$monthName $year',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
+                      color: AppColors.onSurface,
                     ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 8),
+                InkWell(
+                  onTap: _goToToday,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      'Today',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
+          const SizedBox(width: 8),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
                 onPressed: _previousMonth,
@@ -357,9 +374,9 @@ class _EventsScreenState extends State<EventsScreen> {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        childAspectRatio: 0.78,
-        crossAxisSpacing: 6,
-        mainAxisSpacing: 6,
+        childAspectRatio: 0.65,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
       ),
       itemCount: totalCells,
       itemBuilder: (context, index) {
@@ -513,7 +530,7 @@ class _EventsScreenState extends State<EventsScreen> {
 
                 // 2. Cell content
                 Padding(
-                  padding: const EdgeInsets.all(4.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -522,41 +539,44 @@ class _EventsScreenState extends State<EventsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                            decoration: isToday
-                                ? BoxDecoration(
-                                    color: AppColors.primary,
-                                    borderRadius: BorderRadius.circular(6),
-                                  )
-                                : null,
-                            child: Text(
-                              '$dayNum',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: (isToday || isSelected)
-                                    ? FontWeight.bold
-                                    : FontWeight.w600,
-                                color: isToday
-                                    ? AppColors.onPrimary
-                                    : (hasImage
-                                        ? Colors.white
-                                        : (isCurrentMonth
-                                            ? AppColors.onSurface
-                                            : AppColors.textMuted)),
+                          Flexible(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 1),
+                              decoration: isToday
+                                  ? BoxDecoration(
+                                      color: AppColors.primary,
+                                      borderRadius: BorderRadius.circular(5),
+                                    )
+                                  : null,
+                              child: Text(
+                                '$dayNum',
+                                maxLines: 1,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: (isToday || isSelected)
+                                      ? FontWeight.bold
+                                      : FontWeight.w600,
+                                  color: isToday
+                                      ? AppColors.onPrimary
+                                      : (hasImage
+                                          ? Colors.white
+                                          : (isCurrentMonth
+                                              ? AppColors.onSurface
+                                              : AppColors.textMuted)),
+                                ),
                               ),
                             ),
                           ),
                           if (hasVoice)
                             Container(
-                              padding: const EdgeInsets.all(2),
+                              padding: const EdgeInsets.all(1.5),
                               decoration: const BoxDecoration(
                                 color: Color(0xFFE05A47),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
                                 Icons.mic_rounded,
-                                size: 8,
+                                size: 7.5,
                                 color: Colors.white,
                               ),
                             ),
@@ -566,24 +586,24 @@ class _EventsScreenState extends State<EventsScreen> {
                       // Center/Bottom: Mood Emoji or Photo Indicator
                       if (hasMood)
                         Container(
-                          padding: const EdgeInsets.all(2),
+                          padding: const EdgeInsets.all(1),
                           decoration: BoxDecoration(
                             color: Colors.black.withValues(alpha: 0.4),
                             shape: BoxShape.circle,
                           ),
                           child: Text(
                             mood.emoji,
-                            style: const TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 10),
                           ),
                         )
                       else if (hasImage)
                         const Icon(
                           Icons.photo_camera_rounded,
-                          size: 12,
+                          size: 10,
                           color: Colors.white70,
                         )
                       else
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 10),
 
                       // Bottom Indicator dots (e.g. entry count)
                       if (entries.isNotEmpty)
@@ -593,8 +613,8 @@ class _EventsScreenState extends State<EventsScreen> {
                             entries.length.clamp(1, 3),
                             (i) => Container(
                               margin: const EdgeInsets.symmetric(horizontal: 1),
-                              width: 3.5,
-                              height: 3.5,
+                              width: 3,
+                              height: 3,
                               decoration: BoxDecoration(
                                 color: hasMood ? mood.color : AppColors.primary,
                                 shape: BoxShape.circle,
@@ -603,7 +623,7 @@ class _EventsScreenState extends State<EventsScreen> {
                           ),
                         )
                       else
-                        const SizedBox(height: 3.5),
+                        const SizedBox(height: 3),
                     ],
                   ),
                 ),
@@ -643,15 +663,14 @@ class _EventsScreenState extends State<EventsScreen> {
         border: Border.all(color: Colors.white12),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem('Entries', '$totalEntries', Icons.auto_stories_outlined),
+          Expanded(child: _buildStatItem('Entries', '$totalEntries', Icons.auto_stories_outlined)),
           Container(width: 1, height: 22, color: Colors.white12),
-          _buildStatItem('Photos', '$totalPhotos', Icons.photo_camera_outlined),
+          Expanded(child: _buildStatItem('Photos', '$totalPhotos', Icons.photo_camera_outlined)),
           Container(width: 1, height: 22, color: Colors.white12),
-          _buildStatItem('Voice Memos', '$totalVoice', Icons.mic_none_rounded),
+          Expanded(child: _buildStatItem('Voice Memos', '$totalVoice', Icons.mic_none_rounded)),
           Container(width: 1, height: 22, color: Colors.white12),
-          _buildStatItem('Mood', dominantMood, Icons.sentiment_satisfied_rounded),
+          Expanded(child: _buildStatItem('Mood', dominantMood, Icons.sentiment_satisfied_rounded)),
         ],
       ),
     );
@@ -663,15 +682,20 @@ class _EventsScreenState extends State<EventsScreen> {
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 13, color: AppColors.primary),
-            const SizedBox(width: 4),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: AppColors.onSurface,
+            Icon(icon, size: 12, color: AppColors.primary),
+            const SizedBox(width: 3),
+            Flexible(
+              child: Text(
+                value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.onSurface,
+                ),
               ),
             ),
           ],
@@ -679,6 +703,8 @@ class _EventsScreenState extends State<EventsScreen> {
         const SizedBox(height: 2),
         Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 10, color: AppColors.textMuted),
         ),
       ],
@@ -712,29 +738,34 @@ class _EventsScreenState extends State<EventsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'MEMORIES & HIGHLIGHTS',
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'MEMORIES & HIGHLIGHTS',
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    formattedDate,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.onSurface,
+                    const SizedBox(height: 2),
+                    Text(
+                      formattedDate,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.onSurface,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               OutlinedButton.icon(
                 onPressed: () {
                   showJournalEntryModal(
@@ -751,7 +782,7 @@ class _EventsScreenState extends State<EventsScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 ),
               ),
             ],
@@ -771,25 +802,27 @@ class _EventsScreenState extends State<EventsScreen> {
                 children: [
                   Text(mood.emoji, style: const TextStyle(fontSize: 22)),
                   const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Mood on this date: ${mood.label}',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: mood.color,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Mood on this date: ${mood.label}',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: mood.color,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Recorded from your reflections on $monthName ${_selectedDate.day}',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.onSurfaceVariant,
+                        Text(
+                          'Recorded from your reflections on $monthName ${_selectedDate.day}',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: AppColors.onSurfaceVariant,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -803,12 +836,16 @@ class _EventsScreenState extends State<EventsScreen> {
               children: [
                 Icon(Icons.photo_camera_rounded, size: 16, color: AppColors.primary),
                 const SizedBox(width: 6),
-                Text(
-                  'Pictures Added (${images.length})',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.onSurface,
+                Expanded(
+                  child: Text(
+                    'Pictures Added (${images.length})',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.onSurface,
+                    ),
                   ),
                 ),
               ],
@@ -823,12 +860,16 @@ class _EventsScreenState extends State<EventsScreen> {
               children: [
                 Icon(Icons.mic_rounded, size: 16, color: const Color(0xFFE05A47)),
                 const SizedBox(width: 6),
-                Text(
-                  'Voice Memos (${voiceMemos.length})',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.onSurface,
+                Expanded(
+                  child: Text(
+                    'Voice Memos (${voiceMemos.length})',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.onSurface,
+                    ),
                   ),
                 ),
               ],
@@ -844,12 +885,16 @@ class _EventsScreenState extends State<EventsScreen> {
               children: [
                 Icon(Icons.auto_stories_rounded, size: 16, color: AppColors.primary),
                 const SizedBox(width: 6),
-                Text(
-                  'Journal Reflections (${selectedDayEntries.length})',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.onSurface,
+                Expanded(
+                  child: Text(
+                    'Journal Reflections (${selectedDayEntries.length})',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.onSurface,
+                    ),
                   ),
                 ),
               ],
@@ -869,14 +914,19 @@ class _EventsScreenState extends State<EventsScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          entry.title,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.onSurface,
+                        Expanded(
+                          child: Text(
+                            entry.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.onSurface,
+                            ),
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Text(
                           '${entry.date.hour.toString().padLeft(2, '0')}:${entry.date.minute.toString().padLeft(2, '0')}',
                           style: TextStyle(fontSize: 11, color: AppColors.textMuted),

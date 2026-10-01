@@ -6,6 +6,9 @@ import 'package:ripple_flutter/screens/education_screen.dart';
 import 'package:ripple_flutter/screens/health_screen.dart';
 import 'package:ripple_flutter/models/journal_entry.dart';
 import 'package:ripple_flutter/models/mood_item.dart';
+import 'package:ripple_flutter/screens/education_goals_screen.dart';
+import 'package:ripple_flutter/screens/dashboard_screen.dart';
+import 'package:ripple_flutter/screens/navigation/main_navigation_screen.dart';
 import 'package:ripple_flutter/services/journal_service.dart';
 import 'package:ripple_flutter/services/session_service.dart';
 
@@ -352,6 +355,61 @@ void main() {
     await SessionService.instance.logout();
     await tester.pumpAndSettle();
     expect(find.text('Welcome to Ripple'), findsOneWidget);
+  });
+
+  testWidgets('Zero pixel overflow responsiveness test across narrow mobile viewports (320px)', (WidgetTester tester) async {
+    // 320x640 is the most constrained small Android screen (e.g. small budget phones)
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final session = UserGoalSession();
+    session.addCustomGoal('Master Flutter responsive architecture', category: 'Career');
+    session.addCustomGoal('Daily morning routine & meditation', category: 'Health');
+
+    // 1. Test Main Navigation Screen tabs on 320px screen width
+    await tester.pumpWidget(MaterialApp(
+      home: MainNavigationScreen(session: session),
+    ));
+    await tester.pumpAndSettle();
+
+    // Tab 0: Today
+    expect(find.text('Today'), findsWidgets);
+
+    // Tab 1: Journal
+    await tester.tap(find.text('Journal'));
+    await tester.pumpAndSettle();
+    expect(find.text('Journal'), findsWidgets);
+
+    // Tab 2: Events
+    await tester.tap(find.text('Events'));
+    await tester.pumpAndSettle();
+    expect(find.text('Events'), findsWidgets);
+
+    // Tab 3: Tasks
+    await tester.tap(find.text('Tasks'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tasks & Goals'), findsOneWidget);
+
+    // Tab 4: Insights
+    await tester.tap(find.text('Insights'));
+    await tester.pumpAndSettle();
+    expect(find.text('Insights'), findsWidgets);
+
+    // 2. Test Education Goals Screen day selector on 320px screen
+    await tester.pumpWidget(MaterialApp(
+      home: EducationGoalsScreen(session: session),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('Study Routine & Goals'), findsOneWidget);
+
+    // 3. Test Goal Dashboard on 320px screen
+    await tester.pumpWidget(MaterialApp(
+      home: DashboardScreen(session: session),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('Goal Dashboard'), findsOneWidget);
   });
 }
 

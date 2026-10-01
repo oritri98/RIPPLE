@@ -116,26 +116,25 @@ class _TasksScreenState extends State<TasksScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Row(
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
                     children: ['Career', 'Education', 'Health'].map((cat) {
                       final isSelected = _newGoalCategory == cat;
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 6.0),
-                        child: ChoiceChip(
-                          label: Text(cat, style: const TextStyle(fontSize: 12)),
-                          selected: isSelected,
-                          selectedColor: _getCategoryColor(cat).withValues(alpha: 0.3),
-                          backgroundColor: AppColors.surfaceContainerHigh,
-                          labelStyle: TextStyle(
-                            color: isSelected ? _getCategoryColor(cat) : AppColors.onSurfaceVariant,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          ),
-                          onSelected: (_) {
-                            setModalState(() {
-                              _newGoalCategory = cat;
-                            });
-                          },
+                      return ChoiceChip(
+                        label: Text(cat, style: const TextStyle(fontSize: 12)),
+                        selected: isSelected,
+                        selectedColor: _getCategoryColor(cat).withValues(alpha: 0.3),
+                        backgroundColor: AppColors.surfaceContainerHigh,
+                        labelStyle: TextStyle(
+                          color: isSelected ? _getCategoryColor(cat) : AppColors.onSurfaceVariant,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
+                        onSelected: (_) {
+                          setModalState(() {
+                            _newGoalCategory = cat;
+                          });
+                        },
                       );
                     }).toList(),
                   ),
@@ -223,14 +222,19 @@ class _TasksScreenState extends State<TasksScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '$completedGoals of $totalGoals Goals Done',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.onSurface,
+                        Expanded(
+                          child: Text(
+                            '$completedGoals of $totalGoals Goals Done',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.onSurface,
+                            ),
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Text(
                           '${(progress * 100).toInt()}%',
                           style: TextStyle(

@@ -110,12 +110,18 @@ class _GeminiKeyModalState extends State<GeminiKeyModal> {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 20.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      child: SafeArea(
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.85,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 16.0),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
             // Handle bar
             Center(
               child: Container(
@@ -374,6 +380,8 @@ class _GeminiKeyModalState extends State<GeminiKeyModal> {
             ),
             const SizedBox(height: 10),
           ],
+            ),
+          ),
         ),
       ),
     );

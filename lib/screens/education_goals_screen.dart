@@ -192,45 +192,48 @@ class _EducationGoalsScreenState extends State<EducationGoalsScreen> {
               ),
               const SizedBox(height: 10),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: days.map((day) {
                   final isSelected = selectedDays.contains(day);
-                  return InkWell(
-                    onTap: () {
-                      setState(() {
-                        if (isSelected) {
-                          selectedDays.remove(day);
-                        } else {
-                          selectedDays.add(day);
-                        }
-                        widget.session.studyDays = List.from(selectedDays);
-                      });
-                    },
-                    borderRadius: BorderRadius.circular(12),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      width: 44,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color(0xFFD4A373)
-                            : AppColors.cardBg,
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            if (isSelected) {
+                              selectedDays.remove(day);
+                            } else {
+                              selectedDays.add(day);
+                            }
+                            widget.session.studyDays = List.from(selectedDays);
+                          });
+                        },
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: isSelected
-                              ? const Color(0xFFD4A373)
-                              : Colors.white12,
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        day.substring(0, 1),
-                        style: TextStyle(
-                          color: isSelected
-                              ? Colors.white
-                              : AppColors.textSecondary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFFD4A373)
+                                : AppColors.cardBg,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFFD4A373)
+                                  : Colors.white12,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            day.substring(0, 1),
+                            style: TextStyle(
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.textSecondary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -244,15 +247,20 @@ class _EducationGoalsScreenState extends State<EducationGoalsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'ACADEMIC GOALS',
-                    style: TextStyle(
-                      color: Color(0xFFD4A373),
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
+                  const Expanded(
+                    child: Text(
+                      'ACADEMIC GOALS',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Color(0xFFD4A373),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Text(
                     '$educationGoalsCount selected',
                     style: TextStyle(

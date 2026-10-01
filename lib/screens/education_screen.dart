@@ -359,8 +359,10 @@ class _EducationScreenState extends State<EducationScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 12,
+                          runSpacing: 8,
                           children: [
                             ElevatedButton.icon(
                               onPressed: () => _selectRoutineFile(type: 'PDF'),
@@ -380,7 +382,6 @@ class _EducationScreenState extends State<EducationScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
                             ElevatedButton.icon(
                               onPressed: () => _selectRoutineFile(type: 'IMAGE'),
                               icon: const Icon(Icons.image_rounded, size: 18),

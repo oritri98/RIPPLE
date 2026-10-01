@@ -21,13 +21,17 @@ class YesterdayNoteCard extends StatelessWidget {
                 color: AppColors.onSurfaceVariant,
               ),
               const SizedBox(width: 8),
-              Text(
-                'ECHOES FROM YESTERDAY',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                  color: AppColors.onSurfaceVariant,
+              Expanded(
+                child: Text(
+                  'ECHOES FROM YESTERDAY',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
               ),
             ],

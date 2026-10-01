@@ -122,6 +122,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
             automaticallyImplyLeading: false,
             titleSpacing: 20,
             title: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   padding: const EdgeInsets.all(6),
@@ -132,26 +133,33 @@ class _InsightsScreenState extends State<InsightsScreen> {
                   child: Icon(Icons.insights_rounded, size: 20, color: AppColors.primary),
                 ),
                 const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Insights',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                        letterSpacing: -0.3,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Insights',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                          letterSpacing: -0.3,
+                        ),
                       ),
-                    ),
-                    Text(
-                      'AI Growth & Mood Trajectory',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.onSurfaceVariant,
+                      Text(
+                        'AI Growth & Mood Trajectory',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppColors.onSurfaceVariant,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -289,15 +297,14 @@ class _InsightsScreenState extends State<InsightsScreen> {
                       border: Border.all(color: Colors.white10),
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildDayStatus('Mon', true),
-                        _buildDayStatus('Tue', true),
-                        _buildDayStatus('Wed', true),
-                        _buildDayStatus('Thu', true),
-                        _buildDayStatus('Fri', true),
-                        _buildDayStatus('Sat', false),
-                        _buildDayStatus('Sun', false),
+                        Expanded(child: _buildDayStatus('Mon', true)),
+                        Expanded(child: _buildDayStatus('Tue', true)),
+                        Expanded(child: _buildDayStatus('Wed', true)),
+                        Expanded(child: _buildDayStatus('Thu', true)),
+                        Expanded(child: _buildDayStatus('Fri', true)),
+                        Expanded(child: _buildDayStatus('Sat', false)),
+                        Expanded(child: _buildDayStatus('Sun', false)),
                       ],
                     ),
                   ),
@@ -332,10 +339,15 @@ class _InsightsScreenState extends State<InsightsScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'Total Goals Active / Completed',
-                              style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
+                            Expanded(
+                              child: Text(
+                                'Total Goals Active / Completed',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
+                              ),
                             ),
+                            const SizedBox(width: 8),
                             Text(
                               '$completedGoals / $totalGoals',
                               style: TextStyle(
@@ -384,39 +396,49 @@ class _InsightsScreenState extends State<InsightsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Top Tag & Trajectory Pill
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 6,
             children: [
-              Row(
-                children: [
-                  Icon(Icons.auto_awesome_rounded, size: 16, color: report.trajectoryColor),
-                  const SizedBox(width: 6),
-                  Text(
-                    'GEMINI 1.5 FLASH AI',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
-                      color: report.trajectoryColor,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.auto_awesome_rounded, size: 16, color: report.trajectoryColor),
+                    const SizedBox(width: 6),
+                    Text(
+                      'GEMINI 1.5 FLASH AI',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
+                        color: report.trajectoryColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: report.trajectoryColor.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: report.trajectoryColor.withValues(alpha: 0.5),
                     ),
                   ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: report.trajectoryColor.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: report.trajectoryColor.withValues(alpha: 0.5),
-                  ),
-                ),
-                child: Text(
-                  report.emotionalTrajectory,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: report.trajectoryColor,
+                  child: Text(
+                    report.emotionalTrajectory,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: report.trajectoryColor,
+                    ),
                   ),
                 ),
               ),
@@ -507,13 +529,17 @@ class _InsightsScreenState extends State<InsightsScreen> {
                 child: const Icon(Icons.trending_up_rounded, color: Color(0xFF81B29A), size: 16),
               ),
               const SizedBox(width: 8),
-              const Text(
-                'GROWTH & RESILIENCE BREAKTHROUGHS',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
-                  color: Color(0xFF81B29A),
+              const Expanded(
+                child: Text(
+                  'GROWTH & RESILIENCE BREAKTHROUGHS',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.8,
+                    color: Color(0xFF81B29A),
+                  ),
                 ),
               ),
             ],
@@ -571,13 +597,17 @@ class _InsightsScreenState extends State<InsightsScreen> {
                 child: const Icon(Icons.waves_rounded, color: Color(0xFFE07A5F), size: 16),
               ),
               const SizedBox(width: 8),
-              const Text(
-                'DETECTED DIPS & VULNERABILITY TRIGGERS',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
-                  color: Color(0xFFE07A5F),
+              const Expanded(
+                child: Text(
+                  'DETECTED DIPS & VULNERABILITY TRIGGERS',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.8,
+                    color: Color(0xFFE07A5F),
+                  ),
                 ),
               ),
             ],
@@ -625,13 +655,17 @@ class _InsightsScreenState extends State<InsightsScreen> {
             children: [
               Icon(Icons.lightbulb_outline_rounded, size: 16, color: AppColors.primary),
               const SizedBox(width: 6),
-              Text(
-                'AI MINDFUL PRESCRIPTION FOR TOMORROW',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
-                  color: AppColors.primary,
+              Expanded(
+                child: Text(
+                  'AI MINDFUL PRESCRIPTION FOR TOMORROW',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.8,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
             ],
@@ -653,15 +687,16 @@ class _InsightsScreenState extends State<InsightsScreen> {
 
   Widget _buildDayStatus(String day, bool isDone) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           day,
-          style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+          style: TextStyle(fontSize: 11, color: AppColors.onSurfaceVariant),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Container(
-          width: 30,
-          height: 30,
+          width: 26,
+          height: 26,
           decoration: BoxDecoration(
             color: isDone ? AppColors.primary : AppColors.surfaceContainerHigh,
             shape: BoxShape.circle,
@@ -670,7 +705,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
             ),
           ),
           child: isDone
-              ? Icon(Icons.check, size: 16, color: AppColors.onPrimary)
+              ? Icon(Icons.check, size: 14, color: AppColors.onPrimary)
               : null,
         ),
       ],
@@ -681,24 +716,31 @@ class _InsightsScreenState extends State<InsightsScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.onSurface,
+        Expanded(
+          child: Row(
+            children: [
+              Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               ),
-            ),
-          ],
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.onSurface,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: 8),
         Text(
           '$count goals',
           style: TextStyle(

@@ -223,8 +223,11 @@ class _VoiceMemoRecorderWidgetState extends State<VoiceMemoRecorderWidget>
           const SizedBox(height: 14),
 
           // Action buttons: Cancel, Pause/Resume, Stop & Save
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
             children: [
               TextButton.icon(
                 onPressed: widget.onCancel,
@@ -235,6 +238,7 @@ class _VoiceMemoRecorderWidgetState extends State<VoiceMemoRecorderWidget>
                 ),
               ),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
                     onPressed: _togglePauseResume,

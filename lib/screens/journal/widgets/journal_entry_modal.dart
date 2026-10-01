@@ -351,7 +351,9 @@ class _JournalEntryModalState extends State<JournalEntryModal> {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.90,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.90,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,38 +382,42 @@ class _JournalEntryModalState extends State<JournalEntryModal> {
                     style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 15),
                   ),
                 ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'New Journal Entry',
-                      style: TextStyle(
-                        color: AppColors.onSurface,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'New Journal Entry',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: AppColors.onSurface,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 2),
-                    InkWell(
-                      onTap: _pickEntryDate,
-                      borderRadius: BorderRadius.circular(8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.calendar_today_rounded, size: 11, color: AppColors.primary),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${_entryDate.month}/${_entryDate.day}/${_entryDate.year}',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 11,
+                      const SizedBox(height: 2),
+                      InkWell(
+                        onTap: _pickEntryDate,
+                        borderRadius: BorderRadius.circular(8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.calendar_today_rounded, size: 11, color: AppColors.primary),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${_entryDate.month}/${_entryDate.day}/${_entryDate.year}',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 11,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: _handleSave,
@@ -422,7 +428,7 @@ class _JournalEntryModalState extends State<JournalEntryModal> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
                   child: const Text('Save', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
