@@ -9,7 +9,6 @@ class GeminiInsightService extends ChangeNotifier {
   static GeminiInsightService get instance => _instance;
 
   GeminiInsightService._internal() {
-    // Provide an initial sample report so the user sees the feature in action immediately
     _currentReport = AiInsightReport.sampleReport();
   }
 
@@ -19,13 +18,22 @@ class GeminiInsightService extends ChangeNotifier {
   String? _errorMessage;
 
   String? get apiKey => _apiKey;
-  bool get hasApiKey => _apiKey != null && _apiKey!.trim().isNotEmpty;
+  bool get hasApiKey => _apiKey != null && _apiKey!.isNotEmpty;
   AiInsightReport? get currentReport => _currentReport;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
+  static String sanitizeKey(String raw) {
+    return raw
+        .replaceAll(RegExp(r'[\r\n\t\s\u00A0\u200B\u200C\u200D\uFEFF]'), '')
+        .replaceAll('"', '')
+        .replaceAll("'", '')
+        .replaceAll('`', '')
+        .trim();
+  }
+
   void setApiKey(String key) {
-    _apiKey = key.trim();
+    _apiKey = sanitizeKey(key);
     _errorMessage = null;
     notifyListeners();
   }
@@ -35,14 +43,78 @@ class GeminiInsightService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Verifies if a given Gemini API key is valid by sending a 1-token test ping.
+  Future<Map<String, dynamic>> testKeyConnection(String key) async {
+    final cleanKey = sanitizeKey(key);
+    if (cleanKey.isEmpty) {
+      return {'success': false, 'message': 'API key is empty.'};
+    }
+    if (!cleanKey.startsWith('AIzaSy')) {
+      return {
+        'success': false,
+        'message': 'Key format issue: Gemini API keys normally begin with "AIzaSy". Please check you did not copy a project name or ID.',
+      };
+    }
+
+    final url = Uri.parse(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$cleanKey',
+    );
+
+    final requestBody = jsonEncode({
+      'contents': [
+        {
+          'parts': [
+            {'text': 'Hello'}
+          ]
+        }
+      ],
+      'generationConfig': {'maxOutputTokens': 5}
+    });
+
+    final client = HttpClient();
+    try {
+      final request = await client.postUrl(url);
+      request.headers.set('Content-Type', 'application/json');
+      request.headers.set('x-goog-api-key', cleanKey);
+      request.write(requestBody);
+
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': 'Connected to Gemini 1.5 Flash successfully! ✨',
+        };
+      } else {
+        String serverMsg = 'Status code ${response.statusCode}';
+        try {
+          final errJson = jsonDecode(responseBody);
+          serverMsg = errJson['error']?['message'] ?? serverMsg;
+        } catch (_) {}
+
+        if (serverMsg.contains('API key not valid')) {
+          return {
+            'success': false,
+            'message': 'Google reported: API key not valid. Please ensure you copied your key from Google AI Studio (aistudio.google.com).',
+          };
+        }
+        return {'success': false, 'message': serverMsg};
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Network error: $e'};
+    } finally {
+      client.close();
+    }
+  }
+
   /// Generates emotional growth and downfall insights from journal entries.
-  /// If [customKey] is provided, it uses it; otherwise uses the stored [_apiKey].
   Future<AiInsightReport> generateInsights(
     List<JournalEntry> entries, {
     String? customKey,
   }) async {
     final keyToUse = (customKey != null && customKey.trim().isNotEmpty)
-        ? customKey.trim()
+        ? sanitizeKey(customKey)
         : _apiKey;
 
     _isLoading = true;
@@ -51,12 +123,12 @@ class GeminiInsightService extends ChangeNotifier {
 
     try {
       if (entries.isEmpty) {
-        throw Exception('Please add at least one journal reflection before generating AI insights.');
+        throw Exception('Please write at least one journal entry first.');
       }
 
       // If no API key provided, generate a heuristic offline report
       if (keyToUse == null || keyToUse.isEmpty) {
-        await Future.delayed(const Duration(milliseconds: 900)); // Smooth UI transition
+        await Future.delayed(const Duration(milliseconds: 700));
         final offlineReport = _generateLocalHeuristicReport(entries);
         _currentReport = offlineReport;
         _isLoading = false;
@@ -64,7 +136,7 @@ class GeminiInsightService extends ChangeNotifier {
         return offlineReport;
       }
 
-      // Prepare prompt payload for Gemini 1.5 Flash
+      // Prepare prompt payload for Gemini
       final promptText = _buildPrompt(entries);
       final report = await _callGeminiApi(promptText, keyToUse, entries.length);
 
@@ -87,9 +159,9 @@ class GeminiInsightService extends ChangeNotifier {
       'Analyze the user\'s chronological journal reflections below.\n'
       'Detect patterns of emotional growth, resilience, healthy coping habits, as well as '
       'emotional downfalls, dips, stress triggers, or fatigue patterns. '
-      'Respond ONLY in valid, raw JSON (no additional conversational text) using this exact schema:\n'
+      'Respond ONLY in valid, raw JSON (no markdown formatting, no conversational text) matching this schema:\n'
       '{\n'
-      '  "overallSummary": "Narrative 2-3 sentence overview of their trajectory and psychological theme",\n'
+      '  "overallSummary": "Narrative 2-3 sentence overview of their emotional arc and psychological theme",\n'
       '  "emotionalTrajectory": "Improving ↗ OR Fluctuating 〰 OR Dipping ↘ OR Grounded & Stable 🌿",\n'
       '  "trajectoryDescription": "1 sentence explaining why this trajectory was determined",\n'
       '  "growthMilestones": [\n'
@@ -127,8 +199,9 @@ class GeminiInsightService extends ChangeNotifier {
     String apiKey,
     int entriesCount,
   ) async {
+    final cleanKey = sanitizeKey(apiKey);
     final url = Uri.parse(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$cleanKey',
     );
 
     final requestBody = jsonEncode({
@@ -149,25 +222,35 @@ class GeminiInsightService extends ChangeNotifier {
     try {
       final request = await client.postUrl(url);
       request.headers.set('Content-Type', 'application/json');
+      request.headers.set('x-goog-api-key', cleanKey);
       request.write(requestBody);
 
       final response = await request.close();
       final responseBody = await response.transform(utf8.decoder).join();
 
       if (response.statusCode != 200) {
-        final errorJson = jsonDecode(responseBody);
-        final message = errorJson['error']?['message'] ?? 'API error (${response.statusCode})';
-        throw Exception('Gemini API Error: $message');
+        String errorMsg = 'Error (${response.statusCode})';
+        try {
+          final errorJson = jsonDecode(responseBody);
+          errorMsg = errorJson['error']?['message'] ?? errorMsg;
+        } catch (_) {}
+
+        if (errorMsg.contains('API key not valid')) {
+          throw Exception(
+            'API key is not valid. Please ensure you copied your key from Google AI Studio (aistudio.google.com).',
+          );
+        }
+        throw Exception('Gemini: $errorMsg');
       }
 
       final jsonResponse = jsonDecode(responseBody);
-      final textContent = jsonResponse['candidates']?[0]?['content']?['parts']?[0]?['text'];
+      final textContent =
+          jsonResponse['candidates']?[0]?['content']?['parts']?[0]?['text'];
 
       if (textContent == null || textContent.toString().trim().isEmpty) {
-        throw Exception('No response generated by Gemini model.');
+        throw Exception('Gemini generated an empty response.');
       }
 
-      // Clean potential markdown wrap
       String cleanedJson = textContent.toString().trim();
       if (cleanedJson.startsWith('```json')) {
         cleanedJson = cleanedJson.substring(7);
@@ -199,9 +282,8 @@ class GeminiInsightService extends ChangeNotifier {
 
     String topMood = 'Calm 🌿';
     if (moodCounts.isNotEmpty) {
-      final dominantKey =
+      topMood =
           moodCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
-      topMood = dominantKey;
     }
 
     return AiInsightReport(

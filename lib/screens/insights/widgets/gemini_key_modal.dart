@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../constants/app_colors.dart';
 import '../../../services/gemini_insight_service.dart';
 
@@ -24,6 +25,9 @@ class GeminiKeyModal extends StatefulWidget {
 class _GeminiKeyModalState extends State<GeminiKeyModal> {
   late TextEditingController _controller;
   bool _obscure = true;
+  bool _isTesting = false;
+  String? _testResultMsg;
+  bool? _testResultSuccess;
 
   @override
   void initState() {
@@ -37,6 +41,49 @@ class _GeminiKeyModalState extends State<GeminiKeyModal> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _pasteFromClipboard() async {
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    if (data?.text != null && data!.text!.isNotEmpty) {
+      final clean = GeminiInsightService.sanitizeKey(data.text!);
+      setState(() {
+        _controller.text = clean;
+        _testResultMsg = null;
+        _testResultSuccess = null;
+      });
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Pasted and cleaned key from clipboard!')),
+      );
+    }
+  }
+
+  void _testConnection() async {
+    final key = _controller.text.trim();
+    if (key.isEmpty) {
+      setState(() {
+        _testResultMsg = 'Please enter or paste your API key first.';
+        _testResultSuccess = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _isTesting = true;
+      _testResultMsg = null;
+      _testResultSuccess = null;
+    });
+
+    final result = await GeminiInsightService.instance.testKeyConnection(key);
+
+    if (mounted) {
+      setState(() {
+        _isTesting = false;
+        _testResultSuccess = result['success'] as bool;
+        _testResultMsg = result['message'] as String;
+      });
+    }
   }
 
   void _saveKey() {
@@ -136,7 +183,7 @@ class _GeminiKeyModalState extends State<GeminiKeyModal> {
                           size: 16, color: AppColors.primary),
                       const SizedBox(width: 6),
                       Text(
-                        '100% Free Tier (1,500 Requests / Day)',
+                        '100% Free Tier (1,500 Calls / Day)',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -147,10 +194,10 @@ class _GeminiKeyModalState extends State<GeminiKeyModal> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    '1. Go to Google AI Studio at aistudio.google.com\n'
-                    '2. Sign in with any Google account\n'
-                    '3. Click "Get API key" -> "Create API key"\n'
-                    '4. Paste it below to unlock deep psychological insights.',
+                    '1. Open aistudio.google.com in your browser\n'
+                    '2. Sign in with Google -> Tap "Get API key"\n'
+                    '3. Tap "Create API key" and copy the key (starts with "AIzaSy...")\n'
+                    '4. Tap "Paste from Clipboard" below.',
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.onSurfaceVariant,
@@ -162,15 +209,42 @@ class _GeminiKeyModalState extends State<GeminiKeyModal> {
             ),
             const SizedBox(height: 16),
 
-            // Text Field for API Key
-            Text(
-              'GEMINI API KEY',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.0,
-              ),
+            // Text Field for API Key with Paste & Obscure Controls
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'GEMINI API KEY',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+                InkWell(
+                  onTap: _pasteFromClipboard,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.paste_rounded, size: 14, color: AppColors.primary),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Paste from Clipboard',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             TextField(
@@ -178,7 +252,7 @@ class _GeminiKeyModalState extends State<GeminiKeyModal> {
               obscureText: _obscure,
               style: TextStyle(color: AppColors.onSurface, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'Paste AIzaSy... key here',
+                hintText: 'AIzaSy...',
                 hintStyle: TextStyle(color: AppColors.textMuted),
                 filled: true,
                 fillColor: AppColors.surfaceContainerHigh,
@@ -196,28 +270,94 @@ class _GeminiKeyModalState extends State<GeminiKeyModal> {
                   onPressed: () => setState(() => _obscure = !_obscure),
                 ),
               ),
+              onChanged: (_) {
+                if (_testResultMsg != null) {
+                  setState(() {
+                    _testResultMsg = null;
+                    _testResultSuccess = null;
+                  });
+                }
+              },
             ),
+
+            // Test Result Banner (if tested)
+            if (_testResultMsg != null) ...[
+              const SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: (_testResultSuccess == true)
+                      ? const Color(0xFF81B29A).withValues(alpha: 0.15)
+                      : const Color(0xFFE07A5F).withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: (_testResultSuccess == true)
+                        ? const Color(0xFF81B29A)
+                        : const Color(0xFFE07A5F),
+                  ),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      (_testResultSuccess == true)
+                          ? Icons.check_circle_rounded
+                          : Icons.error_outline_rounded,
+                      size: 18,
+                      color: (_testResultSuccess == true)
+                          ? const Color(0xFF81B29A)
+                          : const Color(0xFFE07A5F),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        _testResultMsg!,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.onSurface,
+                          height: 1.3,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
             const SizedBox(height: 18),
 
-            // Actions
+            // Actions: Test Key & Save
             Row(
               children: [
+                OutlinedButton.icon(
+                  onPressed: _isTesting ? null : _testConnection,
+                  icon: _isTesting
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.network_check_rounded, size: 16),
+                  label: Text(_isTesting ? 'Testing...' : 'Test Key'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    side: BorderSide(color: AppColors.primary.withValues(alpha: 0.4)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  ),
+                ),
+                const Spacer(),
                 if (hasKey)
-                  TextButton.icon(
+                  TextButton(
                     onPressed: () {
                       _controller.clear();
                       _saveKey();
                     },
-                    icon: const Icon(Icons.delete_outline, size: 16),
-                    label: const Text('Clear Key', style: TextStyle(fontSize: 12)),
-                    style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+                    child: const Text('Clear', style: TextStyle(color: Colors.redAccent)),
                   ),
-                const Spacer(),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel', style: TextStyle(color: AppColors.onSurfaceVariant)),
-                ),
-                const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _saveKey,
                   style: ElevatedButton.styleFrom(

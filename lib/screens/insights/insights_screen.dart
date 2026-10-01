@@ -33,14 +33,69 @@ class _InsightsScreenState extends State<InsightsScreen> {
         );
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('AI Analysis note: ${e.toString().replaceAll("Exception: ", "")}'),
-            backgroundColor: const Color(0xFFE07A5F),
+      if (!mounted) return;
+      final errorStr = e.toString().replaceAll('Exception: ', '');
+
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppColors.surfaceContainer,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+          title: Row(
+            children: [
+              Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 22),
+              const SizedBox(width: 8),
+              Text(
+                'AI Connection Note',
+                style: TextStyle(
+                  color: AppColors.onSurface,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-        );
-      }
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                errorStr,
+                style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 13, height: 1.4),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Tip: Open setup, tap "Paste from Clipboard", and test the key directly.',
+                style: TextStyle(color: AppColors.primary, fontSize: 12),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                GeminiInsightService.instance.generateInsights(entries, customKey: '');
+              },
+              child: Text(
+                'Use Offline Mode',
+                style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 13),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                showGeminiKeyModal(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.onPrimary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+              child: const Text('Update Key'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
