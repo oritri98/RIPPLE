@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../models/user_goal_session.dart';
-import 'dashboard_screen.dart';
 import 'navigation/main_navigation_screen.dart';
 
 class HealthScreen extends StatefulWidget {
@@ -49,7 +48,7 @@ class _HealthScreenState extends State<HealthScreen> {
             borderRadius: BorderRadius.circular(20),
             side: const BorderSide(color: Color(0xFF81B29A), width: 1.5),
           ),
-          title: const Text(
+          title: Text(
             'Add Health Target',
             style: TextStyle(
               color: AppColors.textPrimary,
@@ -59,10 +58,10 @@ class _HealthScreenState extends State<HealthScreen> {
           content: TextField(
             controller: _customGoalController,
             autofocus: true,
-            style: const TextStyle(color: AppColors.textPrimary),
+            style: TextStyle(color: AppColors.textPrimary),
             decoration: InputDecoration(
               hintText: 'e.g. Drink 2.5L water daily',
-              hintStyle: const TextStyle(color: AppColors.textMuted),
+              hintStyle: TextStyle(color: AppColors.textMuted),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(color: Colors.white24),
@@ -76,7 +75,7 @@ class _HealthScreenState extends State<HealthScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text(
+              child: Text(
                 'Cancel',
                 style: TextStyle(color: AppColors.textSecondary),
               ),
@@ -135,7 +134,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 ),
               ),
               const SizedBox(height: 18),
-              const Text(
+              Text(
                 'No Health Goals Added Yet',
                 style: TextStyle(
                   color: AppColors.textPrimary,
@@ -145,7 +144,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Set up your personalized wellbeing and habit targets to start building a healthier lifestyle.',
                 style: TextStyle(
                   color: AppColors.textSecondary,
@@ -231,7 +230,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Wellness Habits & Goals',
                 style: TextStyle(
                   color: AppColors.textPrimary,
@@ -241,7 +240,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Choose the health and lifestyle habits you want to cultivate.',
                 style: TextStyle(
                   color: AppColors.textSecondary,
@@ -254,18 +253,23 @@ class _HealthScreenState extends State<HealthScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'HABIT TARGETS',
-                    style: TextStyle(
-                      color: Color(0xFF81B29A),
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
+                  const Expanded(
+                    child: Text(
+                      'HABIT TARGETS',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Color(0xFF81B29A),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Text(
                     '$healthGoalsCount selected',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,

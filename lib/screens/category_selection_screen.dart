@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../models/user_goal_session.dart';
+import '../widgets/liquid_glass.dart';
 import 'education_screen.dart';
 import 'health_screen.dart';
 import 'navigation/main_navigation_screen.dart';
@@ -25,6 +26,8 @@ class CategorySelectionScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          const ThemeToggleButton(),
+          const SizedBox(width: 8),
           TextButton.icon(
             onPressed: () {
               Navigator.pushAndRemoveUntil(
@@ -35,8 +38,8 @@ class CategorySelectionScreen extends StatelessWidget {
                 (route) => false,
               );
             },
-            icon: const Icon(Icons.dashboard_outlined, color: AppColors.primary, size: 18),
-            label: const Text(
+            icon: Icon(Icons.dashboard_outlined, color: AppColors.primary, size: 18),
+            label: Text(
               'Skip to Today',
               style: TextStyle(
                 color: AppColors.primary,
@@ -47,7 +50,8 @@ class CategorySelectionScreen extends StatelessWidget {
           const SizedBox(width: 8),
         ],
       ),
-      body: SafeArea(
+      body: LiquidBackground(
+        child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
           child: Column(
@@ -59,7 +63,7 @@ class CategorySelectionScreen extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
+                child: Text(
                   'CHOOSE YOUR DOMAIN',
                   style: TextStyle(
                     color: AppColors.primary,
@@ -70,7 +74,7 @@ class CategorySelectionScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Where shall we start?',
                 style: TextStyle(
                   color: AppColors.onSurface,
@@ -80,7 +84,7 @@ class CategorySelectionScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'Select a core area to set up your personalized goals and actionable roadmap.',
                 style: TextStyle(
                   color: AppColors.onSurfaceVariant,
@@ -157,6 +161,7 @@ class CategorySelectionScreen extends StatelessWidget {
           ),
         ),
       ),
+      ),
     );
   }
 
@@ -203,7 +208,7 @@ class CategorySelectionScreen extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 21,
                       fontWeight: FontWeight.bold,
                       color: AppColors.onSurface,
@@ -212,7 +217,7 @@ class CategorySelectionScreen extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: AppColors.onSurfaceVariant,
                       height: 1.35,

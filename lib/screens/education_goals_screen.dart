@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../models/user_goal_session.dart';
-import 'dashboard_screen.dart';
 import 'navigation/main_navigation_screen.dart';
 
 class EducationGoalsScreen extends StatefulWidget {
@@ -66,7 +65,7 @@ class _EducationGoalsScreenState extends State<EducationGoalsScreen> {
             borderRadius: BorderRadius.circular(20),
             side: const BorderSide(color: Color(0xFFD4A373), width: 1.5),
           ),
-          title: const Text(
+          title: Text(
             'Add Study Goal',
             style: TextStyle(
               color: AppColors.textPrimary,
@@ -76,10 +75,10 @@ class _EducationGoalsScreenState extends State<EducationGoalsScreen> {
           content: TextField(
             controller: _customGoalController,
             autofocus: true,
-            style: const TextStyle(color: AppColors.textPrimary),
+            style: TextStyle(color: AppColors.textPrimary),
             decoration: InputDecoration(
               hintText: 'e.g. Finish Chapter 4 review',
-              hintStyle: const TextStyle(color: AppColors.textMuted),
+              hintStyle: TextStyle(color: AppColors.textMuted),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(color: Colors.white24),
@@ -93,7 +92,7 @@ class _EducationGoalsScreenState extends State<EducationGoalsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text(
+              child: Text(
                 'Cancel',
                 style: TextStyle(color: AppColors.textSecondary),
               ),
@@ -161,7 +160,7 @@ class _EducationGoalsScreenState extends State<EducationGoalsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Study Routine & Goals',
                 style: TextStyle(
                   color: AppColors.textPrimary,
@@ -171,7 +170,7 @@ class _EducationGoalsScreenState extends State<EducationGoalsScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Pick your active study days and select your target academic goals.',
                 style: TextStyle(
                   color: AppColors.textSecondary,
@@ -193,45 +192,48 @@ class _EducationGoalsScreenState extends State<EducationGoalsScreen> {
               ),
               const SizedBox(height: 10),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: days.map((day) {
                   final isSelected = selectedDays.contains(day);
-                  return InkWell(
-                    onTap: () {
-                      setState(() {
-                        if (isSelected) {
-                          selectedDays.remove(day);
-                        } else {
-                          selectedDays.add(day);
-                        }
-                        widget.session.studyDays = List.from(selectedDays);
-                      });
-                    },
-                    borderRadius: BorderRadius.circular(12),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      width: 44,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color(0xFFD4A373)
-                            : AppColors.cardBg,
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            if (isSelected) {
+                              selectedDays.remove(day);
+                            } else {
+                              selectedDays.add(day);
+                            }
+                            widget.session.studyDays = List.from(selectedDays);
+                          });
+                        },
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: isSelected
-                              ? const Color(0xFFD4A373)
-                              : Colors.white12,
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        day.substring(0, 1),
-                        style: TextStyle(
-                          color: isSelected
-                              ? Colors.white
-                              : AppColors.textSecondary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFFD4A373)
+                                : AppColors.cardBg,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFFD4A373)
+                                  : Colors.white12,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            day.substring(0, 1),
+                            style: TextStyle(
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.textSecondary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -245,18 +247,23 @@ class _EducationGoalsScreenState extends State<EducationGoalsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'ACADEMIC GOALS',
-                    style: TextStyle(
-                      color: Color(0xFFD4A373),
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
+                  const Expanded(
+                    child: Text(
+                      'ACADEMIC GOALS',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Color(0xFFD4A373),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Text(
                     '$educationGoalsCount selected',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,

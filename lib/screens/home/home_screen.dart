@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../models/user_goal_session.dart';
+import '../../widgets/liquid_glass.dart';
 import '../category_selection_screen.dart';
+import '../login_screen.dart';
+import '../../services/session_service.dart';
 import 'widgets/ambient_audio_pill.dart';
 import 'widgets/daily_prompt_card.dart';
 import 'widgets/task_list_section.dart';
@@ -20,7 +23,8 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: _buildAppBar(context),
-      body: SingleChildScrollView(
+      body: LiquidBackground(
+        child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
@@ -54,14 +58,16 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+      ),
     );
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      titleSpacing: 20,
+      titleSpacing: 16,
       title: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 36,
@@ -74,37 +80,46 @@ class HomeScreen extends StatelessWidget {
                 width: 1,
               ),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.water_drop_rounded,
               size: 20,
               color: AppColors.primary,
             ),
           ),
           const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                'Ripple',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                  letterSpacing: -0.3,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Ripple',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                    letterSpacing: -0.3,
+                  ),
                 ),
-              ),
-              Text(
-                'Today',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.onSurfaceVariant,
+                Text(
+                  'Today',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
       actions: [
+        const ThemeToggleButton(),
+        const SizedBox(width: 6),
         IconButton(
           onPressed: () {
             Navigator.push(
@@ -114,8 +129,87 @@ class HomeScreen extends StatelessWidget {
               ),
             );
           },
-          icon: const Icon(Icons.explore_outlined, color: AppColors.onSurfaceVariant),
+          icon: Icon(Icons.explore_outlined, color: AppColors.onSurfaceVariant),
           tooltip: 'Explore Goal Domains',
+        ),
+        PopupMenuButton<String>(
+          icon: CircleAvatar(
+            radius: 14,
+            backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+            child: Icon(Icons.person_outline_rounded, size: 16, color: AppColors.primary),
+          ),
+          color: AppColors.surfaceContainerLowest,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: Colors.white12),
+          ),
+          onSelected: (value) async {
+            if (value == 'logout') {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: AppColors.surfaceContainerLowest,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(color: Colors.white12),
+                  ),
+                  title: const Text('Log Out?'),
+                  content: const Text(
+                    'Are you sure you want to log out? Your journal reflections will remain safely saved on this device.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFE05A47),
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Log Out'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirm == true) {
+                await SessionService.instance.logout();
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    (route) => false,
+                  );
+                }
+              }
+            }
+          },
+          itemBuilder: (context) => [
+            if (SessionService.instance.userEmail != null)
+              PopupMenuItem(
+                enabled: false,
+                child: Text(
+                  SessionService.instance.userEmail!,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            PopupMenuItem(
+              value: 'logout',
+              child: Row(
+                children: const [
+                  Icon(Icons.logout_rounded, size: 18, color: Color(0xFFE05A47)),
+                  SizedBox(width: 8),
+                  Text('Log Out', style: TextStyle(color: Color(0xFFE05A47))),
+                ],
+              ),
+            ),
+          ],
         ),
         const SizedBox(width: 8),
       ],
@@ -131,13 +225,13 @@ class HomeScreen extends StatelessWidget {
             Container(
               width: 6,
               height: 6,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
             ),
             const SizedBox(width: 8),
-            const Text(
+            Text(
               'TODAY',
               style: TextStyle(
                 fontSize: 11,
@@ -156,7 +250,7 @@ class HomeScreen extends StatelessWidget {
   Widget _buildGreeting() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text(
           'Good morning.',
           style: TextStyle(
@@ -166,7 +260,7 @@ class HomeScreen extends StatelessWidget {
             letterSpacing: -0.5,
           ),
         ),
-        SizedBox(height: 2),
+        const SizedBox(height: 2),
         Text(
           'Take a deep breath and start your journey.',
           style: TextStyle(
@@ -209,13 +303,13 @@ class HomeScreen extends StatelessWidget {
                 color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.tune_rounded, color: AppColors.primary),
+              child: Icon(Icons.tune_rounded, color: AppColors.primary),
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Explore Goal Domains',
                     style: TextStyle(
@@ -224,7 +318,7 @@ class HomeScreen extends StatelessWidget {
                       color: AppColors.onSurface,
                     ),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
                     'Set milestones for Career, Education & Health',
                     style: TextStyle(
@@ -235,7 +329,7 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios_rounded,
               size: 14,
               color: AppColors.onSurfaceVariant,

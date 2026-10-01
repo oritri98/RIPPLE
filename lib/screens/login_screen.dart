@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
+import '../widgets/liquid_glass.dart';
+import '../services/session_service.dart';
 import 'category_selection_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -54,11 +56,15 @@ class _LoginScreenState extends State<LoginScreen> {
     return emailErr == null && passErr == null;
   }
 
-  void _handleLogin() {
+  void _handleLogin() async {
     if (!_validateInputs()) {
       return;
     }
 
+    final email = _emailController.text.trim();
+    await SessionService.instance.login(email: email);
+
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -71,53 +77,69 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Top Icon / Logo
-                Center(
-                  child: Container(
-                    width: 70,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      color: AppColors.accent.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.accent,
-                        width: 2,
+      body: LiquidBackground(
+        child: SafeArea(
+          child: Stack(
+            children: [
+              Positioned(
+                top: 8,
+                right: 16,
+                child: const ThemeToggleButton(),
+              ),
+              Center(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 24),
+                      // Top Icon / Logo
+                      Center(
+                        child: Container(
+                          width: 74,
+                          height: 74,
+                          decoration: BoxDecoration(
+                            color: AppColors.accent.withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.accent,
+                              width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.accent.withValues(alpha: 0.25),
+                                blurRadius: 18,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.water_drop_rounded,
+                            size: 38,
+                            color: AppColors.accent,
+                          ),
+                        ),
                       ),
-                    ),
-                    child: const Icon(
-                      Icons.water_drop_rounded,
-                      size: 38,
-                      color: AppColors.accent,
-                    ),
-                  ),
-                ),
 
-                const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                // Welcome Title
-                const Text(
-                  'Welcome to Ripple',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
+                      // Welcome Title
+                      Text(
+                        'Welcome to Ripple',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
 
                 const SizedBox(height: 6),
 
                 // Subtitle
-                const Text(
+                Text(
                   'Take a breath and start your journey again',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -130,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Email label
                 Row(
-                  children: const [
+                  children: [
                     Text(
                       'Email',
                       style: TextStyle(
@@ -139,8 +161,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: AppColors.textPrimary,
                       ),
                     ),
-                    SizedBox(width: 4),
-                    Text(
+                    const SizedBox(width: 4),
+                    const Text(
                       '*',
                       style: TextStyle(
                         fontSize: 15,
@@ -164,14 +186,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       setState(() => _emailError = null);
                     }
                   },
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(color: AppColors.textPrimary),
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(
+                    prefixIcon: Icon(
                       Icons.email_outlined,
                       color: AppColors.accent,
                     ),
                     hintText: 'Enter your email',
-                    hintStyle: const TextStyle(color: AppColors.textMuted),
+                    hintStyle: TextStyle(color: AppColors.textMuted),
                     errorText: _emailError,
                     errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 13),
                     filled: true,
@@ -186,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.accent, width: 2),
+                      borderSide: BorderSide(color: AppColors.accent, width: 2),
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -203,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Password label
                 Row(
-                  children: const [
+                  children: [
                     Text(
                       'Password',
                       style: TextStyle(
@@ -212,8 +234,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: AppColors.textPrimary,
                       ),
                     ),
-                    SizedBox(width: 4),
-                    Text(
+                    const SizedBox(width: 4),
+                    const Text(
                       '*',
                       style: TextStyle(
                         fontSize: 15,
@@ -237,9 +259,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       setState(() => _passwordError = null);
                     }
                   },
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(color: AppColors.textPrimary),
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(
+                    prefixIcon: Icon(
                       Icons.lock_outline_rounded,
                       color: AppColors.accent,
                     ),
@@ -257,7 +279,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     hintText: 'Enter your password',
-                    hintStyle: const TextStyle(color: AppColors.textMuted),
+                    hintStyle: TextStyle(color: AppColors.textMuted),
                     errorText: _passwordError,
                     errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 13),
                     filled: true,
@@ -272,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.accent, width: 2),
+                      borderSide: BorderSide(color: AppColors.accent, width: 2),
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -334,12 +356,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Google button
                 OutlinedButton.icon(
                   onPressed: _handleLogin,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.g_mobiledata_rounded,
                     size: 28,
                     color: AppColors.textPrimary,
                   ),
-                  label: const Text(
+                  label: Text(
                     'Continue with Google',
                     style: TextStyle(
                       color: AppColors.textPrimary,
@@ -360,10 +382,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
 
                 // Sign up prompt
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "Don't have an account?",
                       style: TextStyle(
                         fontSize: 14,
@@ -372,7 +395,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextButton(
                       onPressed: _handleLogin,
-                      child: const Text(
+                      child: Text(
                         'Sign Up',
                         style: TextStyle(
                           fontSize: 14,
@@ -385,6 +408,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
+          ),
+        ),
+            ],
           ),
         ),
       ),

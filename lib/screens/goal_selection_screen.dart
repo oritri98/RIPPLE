@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../models/stage_data.dart';
 import '../models/user_goal_session.dart';
+import '../widgets/liquid_glass.dart';
 import '../widgets/step_indicator.dart';
 import 'timeline_selection_screen.dart';
 
@@ -50,9 +51,9 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
           backgroundColor: AppColors.cardBg,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: const BorderSide(color: AppColors.accent, width: 1.5),
+            side: BorderSide(color: AppColors.accent, width: 1.5),
           ),
-          title: const Text(
+          title: Text(
             'Add Custom Goal',
             style: TextStyle(
               color: AppColors.textPrimary,
@@ -62,24 +63,24 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
           content: TextField(
             controller: _customGoalController,
             autofocus: true,
-            style: const TextStyle(color: AppColors.textPrimary),
+            style: TextStyle(color: AppColors.textPrimary),
             decoration: InputDecoration(
               hintText: 'e.g. Finish portfolio website',
-              hintStyle: const TextStyle(color: AppColors.textMuted),
+              hintStyle: TextStyle(color: AppColors.textMuted),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(color: Colors.white24),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.accent),
+                borderSide: BorderSide(color: AppColors.accent),
               ),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text(
+              child: Text(
                 'Cancel',
                 style: TextStyle(color: AppColors.textSecondary),
               ),
@@ -124,14 +125,14 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           TextButton.icon(
             onPressed: _showAddCustomGoalDialog,
-            icon: const Icon(Icons.add_rounded, color: AppColors.accent),
-            label: const Text(
+            icon: Icon(Icons.add_rounded, color: AppColors.accent),
+            label: Text(
               'Custom Goal',
               style: TextStyle(
                 color: AppColors.accent,
@@ -139,39 +140,41 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
               ),
             ),
           ),
+          const ThemeToggleButton(),
           const SizedBox(width: 8),
         ],
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const StepIndicator(
-                currentStep: 3,
-                totalSteps: 4,
-                stepTitle: 'Choose Goals',
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'What are your goals?',
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 38,
-                  fontWeight: FontWeight.bold,
-                  height: 1.15,
+      body: LiquidBackground(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const StepIndicator(
+                  currentStep: 3,
+                  totalSteps: 4,
+                  stepTitle: 'Choose Goals',
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Select the goals you want to achieve for "${widget.focusOption.title}".',
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 15,
-                  height: 1.4,
+                const SizedBox(height: 20),
+                Text(
+                  'What are your goals?',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 38,
+                    fontWeight: FontWeight.bold,
+                    height: 1.15,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 8),
+                Text(
+                  'Select the goals you want to achieve for "${widget.focusOption.title}".',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 15,
+                    height: 1.4,
+                  ),
+                ),
               const SizedBox(height: 20),
               Expanded(
                 child: ListView.builder(
@@ -270,7 +273,7 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: Text(
                           '$selectedCount goal${selectedCount > 1 ? 's' : ''} selected',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.accentLight,
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
@@ -318,6 +321,7 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
           ),
         ),
       ),
+    ),
     );
   }
 }

@@ -25,7 +25,7 @@ class StepIndicator extends StatelessWidget {
           children: [
             Text(
               'STEP $currentStep OF $totalSteps',
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.accent,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -39,7 +39,7 @@ class StepIndicator extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.end,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textMuted,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -55,7 +55,7 @@ class StepIndicator extends StatelessWidget {
             value: progress,
             minHeight: 6,
             backgroundColor: Colors.white.withValues(alpha: 0.12),
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accent),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.accent),
           ),
         ),
       ],

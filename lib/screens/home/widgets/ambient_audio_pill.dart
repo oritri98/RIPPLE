@@ -51,7 +51,7 @@ class _AmbientAudioPillState extends State<AmbientAudioPill> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Ambient Soundscapes',
                     style: TextStyle(
                       fontSize: 18,
@@ -60,7 +60,7 @@ class _AmbientAudioPillState extends State<AmbientAudioPill> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close_rounded, color: AppColors.onSurfaceVariant),
+                    icon: Icon(Icons.close_rounded, color: AppColors.onSurfaceVariant),
                     onPressed: () => Navigator.pop(modalContext),
                   ),
                 ],
@@ -95,7 +95,7 @@ class _AmbientAudioPillState extends State<AmbientAudioPill> {
                       ),
                     ),
                     trailing: isSelected
-                        ? const Icon(Icons.check_rounded, color: AppColors.primary)
+                        ? Icon(Icons.check_rounded, color: AppColors.primary)
                         : null,
                     onTap: () {
                       setState(() {

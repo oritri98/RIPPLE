@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../models/goal_item.dart';
 import '../models/user_goal_session.dart';
+import '../widgets/liquid_glass.dart';
 import 'category_selection_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -124,7 +125,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   width: 1.5,
                 ),
               ),
-              title: const Text(
+              title: Text(
                 'Add New Goal',
                 style: TextStyle(
                   color: AppColors.textPrimary,
@@ -135,7 +136,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Category:',
                     style: TextStyle(
                       color: AppColors.textSecondary,
@@ -176,10 +177,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   TextField(
                     controller: _newGoalController,
                     autofocus: true,
-                    style: const TextStyle(color: AppColors.textPrimary),
+                    style: TextStyle(color: AppColors.textPrimary),
                     decoration: InputDecoration(
                       hintText: 'e.g. Apply to 5 internships or review Chapter 4',
-                      hintStyle: const TextStyle(color: AppColors.textMuted, fontSize: 14),
+                      hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(color: Colors.white24),
@@ -195,7 +196,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text(
+                  child: Text(
                     'Cancel',
                     style: TextStyle(color: AppColors.textSecondary),
                   ),
@@ -246,7 +247,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: const Text(
+        title: Text(
           'Goal Dashboard',
           style: TextStyle(
             color: AppColors.textPrimary,
@@ -255,9 +256,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         actions: [
+          const ThemeToggleButton(),
+          const SizedBox(width: 4),
           IconButton(
             tooltip: 'Category Hub',
-            icon: const Icon(Icons.apps_rounded, color: AppColors.accent),
+            icon: Icon(Icons.apps_rounded, color: AppColors.accent),
             onPressed: () {
               Navigator.push(
                 context,
@@ -320,27 +323,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Overall Progress',
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 14,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Overall Progress',
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '$completed of $total Goals Done',
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                            const SizedBox(height: 4),
+                            Text(
+                              '$completed of $total Goals Done',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 12),
                       Container(
                         width: 52,
                         height: 52,
@@ -355,7 +363,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         alignment: Alignment.center,
                         child: Text(
                           '$percentage%',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.accentLight,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -371,7 +379,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       value: progress,
                       minHeight: 8,
                       backgroundColor: Colors.white.withValues(alpha: 0.1),
-                      valueColor: const AlwaysStoppedAnimation<Color>(
+                      valueColor: AlwaysStoppedAnimation<Color>(
                         AppColors.accent,
                       ),
                     ),
@@ -397,7 +405,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.rocket_launch_rounded,
                           color: AppColors.accent,
                           size: 20,
@@ -405,7 +413,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         const SizedBox(width: 8),
                         Text(
                           '${widget.session.timeline} Roadmap Phases',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -431,7 +439,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                               child: Text(
                                 m['phase']!,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: AppColors.accentLight,
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
@@ -442,7 +450,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Expanded(
                               child: Text(
                                 m['task']!,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: AppColors.textSecondary,
                                   fontSize: 13,
                                 ),
@@ -466,9 +474,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.add_circle_outline_rounded, color: AppColors.accent, size: 22),
+                  Icon(Icons.add_circle_outline_rounded, color: AppColors.accent, size: 22),
                   const SizedBox(width: 10),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Explore other sections to add goals',
                       style: TextStyle(
@@ -487,7 +495,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       'Explore Hub →',
                       style: TextStyle(
                         color: AppColors.accent,
@@ -524,15 +532,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
             // Status Filter Tabs
             Row(
               children: [
-                Text(
-                  '$_selectedCategoryFilter Goals',
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    '$_selectedCategoryFilter Goals',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 8),
                 _buildStatusChip('All', 0),
                 const SizedBox(width: 6),
                 _buildStatusChip('Active', 1),
@@ -563,7 +575,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ? 'No completed goals yet.\nTap a goal checkbox when done!'
                           : 'No goals found in this view.\nTap "+ Add Goal" or explore the Hub!',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: 14,
                         height: 1.4,
@@ -684,7 +696,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.delete_outline_rounded,
                               size: 20,
                               color: AppColors.textMuted,
@@ -720,24 +732,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
         color: catColor.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            _getCategoryIcon(category),
-            size: 14,
-            color: catColor,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              _getCategoryIcon(category),
+              size: 14,
               color: catColor,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
             ),
-          ),
-        ],
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: catColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

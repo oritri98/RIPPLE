@@ -139,4 +139,43 @@ class UserGoalSession {
       goalItems: goalItems ?? List.from(this.goalItems),
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'activeCategory': activeCategory,
+      'stage': stage,
+      'focusArea': focusArea,
+      'selectedGoals': selectedGoals,
+      'timeline': timeline,
+      'studyFrequency': studyFrequency,
+      'studyDays': studyDays,
+      'studyMaterialName': studyMaterialName,
+      'educationFocus': educationFocus,
+      'goalItems': goalItems.map((g) => g.toMap()).toList(),
+    };
+  }
+
+  factory UserGoalSession.fromMap(Map<String, dynamic> map) {
+    return UserGoalSession(
+      activeCategory: map['activeCategory'] as String?,
+      stage: map['stage'] as String?,
+      focusArea: map['focusArea'] as String?,
+      selectedGoals: (map['selectedGoals'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      timeline: map['timeline'] as String?,
+      studyFrequency: map['studyFrequency'] as String?,
+      studyDays: (map['studyDays'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          ['M', 'T', 'W', 'Th', 'F'],
+      studyMaterialName: map['studyMaterialName'] as String?,
+      educationFocus: map['educationFocus'] as String?,
+      goalItems: (map['goalItems'] as List<dynamic>?)
+              ?.map((e) => GoalItem.fromMap(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
 }

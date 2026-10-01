@@ -23,6 +23,8 @@ class OptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLight = AppColors.isLight;
+
     return Container(
       width: double.infinity,
       constraints: BoxConstraints(minHeight: minHeight),
@@ -32,17 +34,20 @@ class OptionCard extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           backgroundColor: isSelected
               ? AppColors.cardBgSelected
-              : Colors.transparent,
+              : (isLight ? AppColors.cardBg : Colors.transparent),
           foregroundColor: AppColors.textPrimary,
           side: BorderSide(
             color: isSelected ? AppColors.accent : AppColors.cardBorder,
-            width: isSelected ? 2.5 : 2.0,
+            width: isSelected ? 2.5 : 1.5,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
           ),
-          elevation: isSelected ? 4 : 0,
+          shadowColor: isLight
+              ? const Color(0xFF003366).withValues(alpha: 0.1)
+              : Colors.black,
+          elevation: isSelected ? 4 : (isLight ? 1.5 : 0),
         ),
         child: Row(
           children: [
@@ -60,14 +65,16 @@ class OptionCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? AppColors.accentLight : AppColors.textPrimary,
+                      color: isSelected
+                          ? (isLight ? AppColors.primary : AppColors.accentLight)
+                          : AppColors.textPrimary,
                     ),
                   ),
                   if (subtitle != null && subtitle!.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
                       subtitle!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w400,
@@ -80,7 +87,7 @@ class OptionCard extends StatelessWidget {
             if (trailing != null)
               trailing!
             else if (isSelected)
-              const Icon(
+              Icon(
                 Icons.check_circle_rounded,
                 color: AppColors.accent,
                 size: 26,

@@ -38,9 +38,9 @@ class _TaskListSectionState extends State<TaskListSection> {
           backgroundColor: AppColors.surfaceContainer,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: const BorderSide(color: AppColors.primary, width: 1.2),
+            side: BorderSide(color: AppColors.primary, width: 1.2),
           ),
-          title: const Text(
+          title: Text(
             'Add Today\'s Intention',
             style: TextStyle(
               color: AppColors.onSurface,
@@ -50,24 +50,24 @@ class _TaskListSectionState extends State<TaskListSection> {
           content: TextField(
             controller: _intentionController,
             autofocus: true,
-            style: const TextStyle(color: AppColors.onSurface),
+            style: TextStyle(color: AppColors.onSurface),
             decoration: InputDecoration(
               hintText: 'e.g. Finish reading Chapter 3',
-              hintStyle: const TextStyle(color: AppColors.textMuted),
+              hintStyle: TextStyle(color: AppColors.textMuted),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(color: Colors.white24),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.primary),
+                borderSide: BorderSide(color: AppColors.primary),
               ),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cancel', style: TextStyle(color: AppColors.onSurfaceVariant)),
+              child: Text('Cancel', style: TextStyle(color: AppColors.onSurfaceVariant)),
             ),
             ElevatedButton(
               onPressed: () {
@@ -139,37 +139,44 @@ class _TaskListSectionState extends State<TaskListSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  const Text(
-                    'Today\'s Intentions',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.onSurface,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      '$completedCount/$totalCount',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
+              Expanded(
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'Today\'s Intentions',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.onSurface,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        '$completedCount/$totalCount',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               IconButton(
                 onPressed: _showAddIntentionDialog,
-                icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.primary),
+                icon: Icon(Icons.add_circle_outline_rounded, color: AppColors.primary),
                 tooltip: 'Add Intention',
                 constraints: const BoxConstraints(),
                 padding: EdgeInsets.zero,
@@ -185,7 +192,7 @@ class _TaskListSectionState extends State<TaskListSection> {
               value: totalCount > 0 ? (completedCount / totalCount) : 0,
               minHeight: 6,
               backgroundColor: AppColors.surfaceContainerHigh,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
           ),
           const SizedBox(height: 16),
@@ -261,7 +268,7 @@ class _TaskListSectionState extends State<TaskListSection> {
                   ),
                 ),
                 child: isDone
-                    ? const Icon(
+                    ? Icon(
                         Icons.check,
                         size: 14,
                         color: AppColors.onPrimary,

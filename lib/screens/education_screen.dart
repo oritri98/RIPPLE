@@ -69,7 +69,6 @@ class _EducationScreenState extends State<EducationScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (modalContext) {
-        final customNameController = TextEditingController();
         return Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -79,7 +78,7 @@ class _EducationScreenState extends State<EducationScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Upload Routine File',
                     style: TextStyle(
                       fontSize: 20,
@@ -88,13 +87,13 @@ class _EducationScreenState extends State<EducationScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close_rounded, color: AppColors.textSecondary),
+                    icon: Icon(Icons.close_rounded, color: AppColors.textSecondary),
                     onPressed: () => Navigator.pop(modalContext),
                   ),
                 ],
               ),
               const SizedBox(height: 6),
-              const Text(
+              Text(
                 'Choose a format to upload your class routine or timetable:',
                 style: TextStyle(
                   fontSize: 14,
@@ -129,8 +128,8 @@ class _EducationScreenState extends State<EducationScreen> {
                           ),
                         ),
                         child: Column(
-                          children: const [
-                            Icon(
+                          children: [
+                            const Icon(
                               Icons.picture_as_pdf_rounded,
                               size: 40,
                               color: Colors.redAccent,
@@ -183,8 +182,8 @@ class _EducationScreenState extends State<EducationScreen> {
                           ),
                         ),
                         child: Column(
-                          children: const [
-                            Icon(
+                          children: [
+                            const Icon(
                               Icons.image_rounded,
                               size: 40,
                               color: Color(0xFFD4A373),
@@ -273,7 +272,7 @@ class _EducationScreenState extends State<EducationScreen> {
                 ],
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 'Education Preferences',
                 style: TextStyle(
                   color: AppColors.textPrimary,
@@ -283,7 +282,7 @@ class _EducationScreenState extends State<EducationScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Submit your routine file (optional), study frequency, and focus path.',
                 style: TextStyle(
                   color: AppColors.textSecondary,
@@ -298,7 +297,7 @@ class _EducationScreenState extends State<EducationScreen> {
                 children: [
                   _buildSectionTitle('SUBMIT ROUTINE (PDF OR IMAGE)'),
                   const SizedBox(width: 8),
-                  const Text(
+                  Text(
                     '(Optional)',
                     style: TextStyle(
                       color: AppColors.textMuted,
@@ -343,7 +342,7 @@ class _EducationScreenState extends State<EducationScreen> {
                           ),
                         ),
                         const SizedBox(height: 14),
-                        const Text(
+                        Text(
                           'Upload Class or Study Routine',
                           style: TextStyle(
                             color: AppColors.textPrimary,
@@ -352,7 +351,7 @@ class _EducationScreenState extends State<EducationScreen> {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        const Text(
+                        Text(
                           'Only PDF (.pdf) or Image (.png, .jpg) files supported',
                           style: TextStyle(
                             color: AppColors.textMuted,
@@ -360,8 +359,10 @@ class _EducationScreenState extends State<EducationScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 12,
+                          runSpacing: 8,
                           children: [
                             ElevatedButton.icon(
                               onPressed: () => _selectRoutineFile(type: 'PDF'),
@@ -381,7 +382,6 @@ class _EducationScreenState extends State<EducationScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
                             ElevatedButton.icon(
                               onPressed: () => _selectRoutineFile(type: 'IMAGE'),
                               icon: const Icon(Icons.image_rounded, size: 18),
@@ -458,7 +458,7 @@ class _EducationScreenState extends State<EducationScreen> {
                           children: [
                             Text(
                               _uploadedRoutineFileName!,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.textPrimary,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,

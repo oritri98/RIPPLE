@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../models/goal_item.dart';
 import '../../models/user_goal_session.dart';
+import '../../widgets/liquid_glass.dart';
 
 class TasksScreen extends StatefulWidget {
   final UserGoalSession? session;
@@ -17,7 +18,7 @@ class TasksScreen extends StatefulWidget {
 
 class _TasksScreenState extends State<TasksScreen> {
   String _selectedCategoryFilter = 'All'; // 'All', 'Career', 'Education', 'Health'
-  int _selectedStatusFilter = 0; // 0: All, 1: Active, 2: Done
+  final int _selectedStatusFilter = 0; // 0: All, 1: Active, 2: Done
   final TextEditingController _newGoalController = TextEditingController();
   String _newGoalCategory = 'Career';
 
@@ -75,9 +76,9 @@ class _TasksScreenState extends State<TasksScreen> {
               backgroundColor: AppColors.surfaceContainer,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
-                side: const BorderSide(color: AppColors.primary, width: 1.2),
+                side: BorderSide(color: AppColors.primary, width: 1.2),
               ),
-              title: const Text(
+              title: Text(
                 'Add Goal or Intention',
                 style: TextStyle(
                   color: AppColors.onSurface,
@@ -91,22 +92,22 @@ class _TasksScreenState extends State<TasksScreen> {
                   TextField(
                     controller: _newGoalController,
                     autofocus: true,
-                    style: const TextStyle(color: AppColors.onSurface),
+                    style: TextStyle(color: AppColors.onSurface),
                     decoration: InputDecoration(
                       hintText: 'What do you want to accomplish?',
-                      hintStyle: const TextStyle(color: AppColors.textMuted),
+                      hintStyle: TextStyle(color: AppColors.textMuted),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(color: Colors.white24),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppColors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  Text(
                     'Domain Category',
                     style: TextStyle(
                       color: AppColors.onSurfaceVariant,
@@ -115,26 +116,25 @@ class _TasksScreenState extends State<TasksScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Row(
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
                     children: ['Career', 'Education', 'Health'].map((cat) {
                       final isSelected = _newGoalCategory == cat;
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 6.0),
-                        child: ChoiceChip(
-                          label: Text(cat, style: const TextStyle(fontSize: 12)),
-                          selected: isSelected,
-                          selectedColor: _getCategoryColor(cat).withValues(alpha: 0.3),
-                          backgroundColor: AppColors.surfaceContainerHigh,
-                          labelStyle: TextStyle(
-                            color: isSelected ? _getCategoryColor(cat) : AppColors.onSurfaceVariant,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          ),
-                          onSelected: (_) {
-                            setModalState(() {
-                              _newGoalCategory = cat;
-                            });
-                          },
+                      return ChoiceChip(
+                        label: Text(cat, style: const TextStyle(fontSize: 12)),
+                        selected: isSelected,
+                        selectedColor: _getCategoryColor(cat).withValues(alpha: 0.3),
+                        backgroundColor: AppColors.surfaceContainerHigh,
+                        labelStyle: TextStyle(
+                          color: isSelected ? _getCategoryColor(cat) : AppColors.onSurfaceVariant,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
+                        onSelected: (_) {
+                          setModalState(() {
+                            _newGoalCategory = cat;
+                          });
+                        },
                       );
                     }).toList(),
                   ),
@@ -143,7 +143,7 @@ class _TasksScreenState extends State<TasksScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('Cancel', style: TextStyle(color: AppColors.onSurfaceVariant)),
+                  child: Text('Cancel', style: TextStyle(color: AppColors.onSurfaceVariant)),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -183,7 +183,7 @@ class _TasksScreenState extends State<TasksScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         titleSpacing: 20,
-        title: const Text(
+        title: Text(
           'Tasks & Goals',
           style: TextStyle(
             fontSize: 24,
@@ -192,65 +192,73 @@ class _TasksScreenState extends State<TasksScreen> {
           ),
         ),
         actions: [
+          const ThemeToggleButton(),
+          const SizedBox(width: 4),
           IconButton(
-            icon: const Icon(Icons.add_task_rounded, color: AppColors.primary),
+            icon: Icon(Icons.add_task_rounded, color: AppColors.primary),
             onPressed: _showAddGoalDialog,
             tooltip: 'Add Goal',
           ),
           const SizedBox(width: 8),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header Progress Card
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Container(
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: AppColors.surfaceContainer,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '$completedGoals of $totalGoals Goals Done',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.onSurface,
+      body: LiquidBackground(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header Progress Card
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceContainer,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '$completedGoals of $totalGoals Goals Done',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.onSurface,
+                            ),
+                          ),
                         ),
-                      ),
-                      Text(
-                        '${(progress * 100).toInt()}%',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                        const SizedBox(width: 8),
+                        Text(
+                          '${(progress * 100).toInt()}%',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 8,
-                      backgroundColor: AppColors.surfaceContainerHigh,
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 8,
+                        backgroundColor: AppColors.surfaceContainerHigh,
+                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
 
           // Domain Filter Chips
           SingleChildScrollView(
@@ -278,13 +286,13 @@ class _TasksScreenState extends State<TasksScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.check_circle_outline_rounded,
                           size: 48,
                           color: AppColors.outline,
                         ),
                         const SizedBox(height: 12),
-                        const Text(
+                        Text(
                           'No goals in this filter',
                           style: TextStyle(
                             color: AppColors.onSurfaceVariant,
@@ -356,7 +364,7 @@ class _TasksScreenState extends State<TasksScreen> {
                                   ),
                                 ),
                                 child: goal.isCompleted
-                                    ? const Icon(
+                                    ? Icon(
                                         Icons.check,
                                         size: 15,
                                         color: AppColors.onPrimary,
@@ -417,6 +425,7 @@ class _TasksScreenState extends State<TasksScreen> {
           ),
           const SizedBox(height: 80),
         ],
+      ),
       ),
     );
   }

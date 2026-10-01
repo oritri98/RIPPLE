@@ -4,9 +4,18 @@ import 'package:ripple_flutter/main.dart';
 import 'package:ripple_flutter/models/user_goal_session.dart';
 import 'package:ripple_flutter/screens/education_screen.dart';
 import 'package:ripple_flutter/screens/health_screen.dart';
+import 'package:ripple_flutter/models/journal_entry.dart';
+import 'package:ripple_flutter/models/mood_item.dart';
+import 'package:ripple_flutter/screens/education_goals_screen.dart';
+import 'package:ripple_flutter/screens/dashboard_screen.dart';
 import 'package:ripple_flutter/screens/navigation/main_navigation_screen.dart';
+import 'package:ripple_flutter/services/journal_service.dart';
+import 'package:ripple_flutter/services/session_service.dart';
 
 void main() {
+  setUp(() async {
+    await SessionService.instance.logout();
+  });
   testWidgets('Login Validation, Onboarding, and Main Navigation Smoke Test', (WidgetTester tester) async {
     // Set realistic mobile phone viewport
     tester.view.physicalSize = const Size(800, 1600);
@@ -178,4 +187,229 @@ void main() {
     expect(find.text('Drink 2.5L water daily'), findsOneWidget);
     expect(find.text('1 selected'), findsOneWidget);
   });
+
+  testWidgets('Events calendar displays images, moods, voice memos, and supports adding new entry', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+
+    // Fast-login
+    final emailField = find.byType(TextField).at(0);
+    final passwordField = find.byType(TextField).at(1);
+    await tester.enterText(emailField, 'user@example.com');
+    await tester.enterText(passwordField, 'password123');
+    await tester.tap(find.text('Log In'));
+    await tester.pumpAndSettle();
+
+    // Select Career -> Student -> Job -> Goal -> Timeline -> Start
+    await tester.tap(find.text('Career and Goals'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('University Student'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Get a Job'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Polish LinkedIn and build a standout resume'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Set Target Timeline  →'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('1 Week'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Review Goal Plan  →'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Start My Plan 🚀'));
+    await tester.pumpAndSettle();
+
+    // 1. Tap on the new Events tab
+    expect(find.text('Events'), findsOneWidget);
+    await tester.tap(find.text('Events'));
+    await tester.pumpAndSettle();
+
+    // Verify Events screen loaded
+    expect(find.text('Calendar & Memory Timeline'), findsOneWidget);
+    expect(find.text('MEMORIES & HIGHLIGHTS'), findsOneWidget);
+
+    // Verify filter pills exist
+    expect(find.text('All'), findsWidgets);
+    expect(find.text('📷 Photos'), findsOneWidget);
+    expect(find.text('🎙️ Voice'), findsOneWidget);
+
+    // 2. Open Add Entry modal from Events screen
+    await tester.tap(find.text('Add Entry'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('New Journal Entry'), findsOneWidget);
+    expect(find.text('Add Photo'), findsOneWidget);
+    expect(find.text('Voice Memo'), findsOneWidget);
+
+    // Enter reflection text
+    final contentField = find.byType(TextField).at(1);
+    await tester.enterText(contentField, 'Testing calendar memory with photos and voice.');
+
+    // Save entry
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    // Verify snackbar feedback and return to Events screen
+    expect(find.text('Journal entry & memories saved to your timeline! ✨'), findsOneWidget);
+  });
+
+  testWidgets('Journal Screen supports pinning up to 5 entries and deleting with confirmation and undo', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    // Initial check on service
+    final initialCount = JournalService.instance.entries.length;
+    expect(initialCount, greaterThan(0));
+
+    // Unpin all entries first
+    for (final e in List<JournalEntry>.from(JournalEntry.sampleEntries)) {
+      if (e.isPinned) {
+        JournalService.instance.togglePin(e.id);
+      }
+    }
+    expect(JournalService.instance.pinnedCount, 0);
+
+    // Pin exactly 4 existing entries
+    for (int i = 0; i < 4 && i < JournalEntry.sampleEntries.length; i++) {
+      final success = JournalService.instance.togglePin(JournalEntry.sampleEntries[i].id);
+      expect(success, isTrue);
+    }
+    expect(JournalService.instance.pinnedCount, 4);
+
+    // Add extra entries to test 5-pin limit
+    final extraEntry1 = JournalEntry(
+      id: 'test-pin-5',
+      title: 'Pin 5 Reflection',
+      content: 'Testing 5th pin',
+      date: DateTime.now(),
+      mood: MoodItem.defaultMoods[0],
+    );
+    final extraEntry2 = JournalEntry(
+      id: 'test-pin-6',
+      title: 'Pin 6 Reflection',
+      content: 'Testing 6th pin',
+      date: DateTime.now(),
+    mood: MoodItem.defaultMoods[0],
+    );
+    JournalService.instance.addEntry(extraEntry1);
+    JournalService.instance.addEntry(extraEntry2);
+
+    // Pin 5th entry (should succeed)
+    final pin5Success = JournalService.instance.togglePin('test-pin-5');
+    expect(pin5Success, isTrue);
+    expect(JournalService.instance.pinnedCount, 5);
+
+    // Try pinning 6th entry (must fail due to max 5 limit!)
+    final pin6Success = JournalService.instance.togglePin('test-pin-6');
+    expect(pin6Success, isFalse);
+    expect(JournalService.instance.pinnedCount, 5);
+
+    // Verify pinned entries appear first in the entries getter
+    final sorted = JournalService.instance.entries;
+    for (int i = 0; i < 5; i++) {
+      expect(sorted[i].isPinned, isTrue);
+    }
+    expect(sorted[5].isPinned, isFalse);
+
+    // Test delete and undo
+    final deleted = JournalService.instance.removeEntry('test-pin-6');
+    expect(deleted, isNotNull);
+    expect(deleted!.id, 'test-pin-6');
+    expect(JournalService.instance.entries.any((e) => e.id == 'test-pin-6'), isFalse);
+
+    // Test undo / restore
+    JournalService.instance.restoreEntry(deleted);
+    expect(JournalService.instance.entries.any((e) => e.id == 'test-pin-6'), isTrue);
+  });
+
+  testWidgets('Auto-login and session persistence works across app launches', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    // 1. Initially logged out -> launches LoginScreen
+    await SessionService.instance.logout();
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+    expect(find.text('Welcome to Ripple'), findsOneWidget);
+
+    // 2. Perform Login
+    await SessionService.instance.login(email: 'persisted@ripple.com');
+    await tester.pumpAndSettle();
+
+    // 3. Re-launch MyApp while logged in -> Auto-login skips LoginScreen directly to MainNavigationScreen
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+    expect(find.text('Welcome to Ripple'), findsNothing);
+    expect(find.text('Ripple'), findsOneWidget);
+    expect(find.text('Today'), findsWidgets);
+
+    // 4. Logout returns to LoginScreen
+    await SessionService.instance.logout();
+    await tester.pumpAndSettle();
+    expect(find.text('Welcome to Ripple'), findsOneWidget);
+  });
+
+  testWidgets('Zero pixel overflow responsiveness test across narrow mobile viewports (320px)', (WidgetTester tester) async {
+    // 320x640 is the most constrained small Android screen (e.g. small budget phones)
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final session = UserGoalSession();
+    session.addCustomGoal('Master Flutter responsive architecture', category: 'Career');
+    session.addCustomGoal('Daily morning routine & meditation', category: 'Health');
+
+    // 1. Test Main Navigation Screen tabs on 320px screen width
+    await tester.pumpWidget(MaterialApp(
+      home: MainNavigationScreen(session: session),
+    ));
+    await tester.pumpAndSettle();
+
+    // Tab 0: Today
+    expect(find.text('Today'), findsWidgets);
+
+    // Tab 1: Journal
+    await tester.tap(find.text('Journal'));
+    await tester.pumpAndSettle();
+    expect(find.text('Journal'), findsWidgets);
+
+    // Tab 2: Events
+    await tester.tap(find.text('Events'));
+    await tester.pumpAndSettle();
+    expect(find.text('Events'), findsWidgets);
+
+    // Tab 3: Tasks
+    await tester.tap(find.text('Tasks'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tasks & Goals'), findsOneWidget);
+
+    // Tab 4: Insights
+    await tester.tap(find.text('Insights'));
+    await tester.pumpAndSettle();
+    expect(find.text('Insights'), findsWidgets);
+
+    // 2. Test Education Goals Screen day selector on 320px screen
+    await tester.pumpWidget(MaterialApp(
+      home: EducationGoalsScreen(session: session),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('Study Routine & Goals'), findsOneWidget);
+
+    // 3. Test Goal Dashboard on 320px screen
+    await tester.pumpWidget(MaterialApp(
+      home: DashboardScreen(session: session),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('Goal Dashboard'), findsOneWidget);
+  });
 }
+

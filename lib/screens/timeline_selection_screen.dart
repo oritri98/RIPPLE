@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../models/user_goal_session.dart';
+import '../widgets/liquid_glass.dart';
 import '../widgets/step_indicator.dart';
 import 'summary_screen.dart';
 
@@ -74,12 +75,17 @@ class _TimelineSelectionScreenState extends State<TimelineSelectionScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: const [
+          ThemeToggleButton(),
+          SizedBox(width: 12),
+        ],
       ),
-      body: SafeArea(
-        child: Padding(
+      body: LiquidBackground(
+        child: SafeArea(
+          child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,7 +96,7 @@ class _TimelineSelectionScreenState extends State<TimelineSelectionScreen> {
                 stepTitle: 'Target Timeline',
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 'Pick your timeline',
                 style: TextStyle(
                   color: AppColors.textPrimary,
@@ -100,7 +106,7 @@ class _TimelineSelectionScreenState extends State<TimelineSelectionScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'How soon would you like to achieve your selected goals?',
                 style: TextStyle(
                   color: AppColors.textSecondary,
@@ -193,7 +199,7 @@ class _TimelineSelectionScreenState extends State<TimelineSelectionScreen> {
                                           ),
                                           child: Text(
                                             item.duration,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontSize: 11,
                                               fontWeight: FontWeight.w700,
                                               color: AppColors.accent,
@@ -205,7 +211,7 @@ class _TimelineSelectionScreenState extends State<TimelineSelectionScreen> {
                                     const SizedBox(height: 6),
                                     Text(
                                       item.description,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 14,
                                         color: AppColors.textSecondary,
                                         height: 1.35,
@@ -284,6 +290,7 @@ class _TimelineSelectionScreenState extends State<TimelineSelectionScreen> {
           ),
         ),
       ),
+    ),
     );
   }
 }

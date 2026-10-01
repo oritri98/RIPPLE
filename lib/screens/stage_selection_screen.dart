@@ -22,7 +22,7 @@ class StageSelectionScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -38,7 +38,7 @@ class StageSelectionScreen extends StatelessWidget {
                 stepTitle: 'Current Stage',
               ),
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'What stage are you at?',
                 style: TextStyle(
                   color: AppColors.textPrimary,
@@ -48,7 +48,7 @@ class StageSelectionScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
+              Text(
                 'Choose where you currently stand to get tailored goal pathways.',
                 style: TextStyle(
                   color: AppColors.textSecondary,

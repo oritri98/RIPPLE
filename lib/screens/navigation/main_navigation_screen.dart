@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../models/user_goal_session.dart';
+import '../../services/session_service.dart';
 import '../../widgets/bottom_nav_bar.dart';
+import '../events/events_screen.dart';
 import '../home/home_screen.dart';
 import '../insights/insights_screen.dart';
 import '../journal/journal_screen.dart';
@@ -30,7 +32,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
-    _session = widget.session ?? UserGoalSession();
+    _session = widget.session ?? SessionService.instance.savedSession ?? UserGoalSession();
+    SessionService.instance.saveGoalSession(_session);
   }
 
   @override
@@ -38,6 +41,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final screens = [
       HomeScreen(session: _session),
       const JournalScreen(),
+      EventsScreen(session: _session),
       TasksScreen(session: _session),
       InsightsScreen(session: _session),
     ];
@@ -45,9 +49,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       extendBody: true,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 24),
+        padding: const EdgeInsets.only(bottom: 76, right: 6),
         child: FloatingActionButton(
           onPressed: () => showJournalEntryModal(context),
           backgroundColor: AppColors.primary,

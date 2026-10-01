@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../constants/app_colors.dart';
+import '../../../widgets/liquid_glass.dart';
 import '../../journal/widgets/journal_entry_modal.dart';
 
 class DailyPromptCard extends StatelessWidget {
@@ -7,17 +8,9 @@ class DailyPromptCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
+    return LiquidGlassContainer(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainer,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.25),
-          width: 1.2,
-        ),
-      ),
+      borderRadius: 22,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -30,7 +23,7 @@ class DailyPromptCard extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
@@ -38,7 +31,7 @@ class DailyPromptCard extends StatelessWidget {
                       size: 13,
                       color: AppColors.primary,
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Text(
                       'DAILY REFLECTION',
                       style: TextStyle(
@@ -51,7 +44,7 @@ class DailyPromptCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.auto_stories_outlined,
                 size: 18,
                 color: AppColors.onSurfaceVariant,
@@ -59,7 +52,7 @@ class DailyPromptCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          const Text(
+          Text(
             '"What is one small thing you can let go of today to create mental space?"',
             style: TextStyle(
               fontSize: 17,
