@@ -11,6 +11,15 @@ class _EducationSelectionState extends State<EducationSelection> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 43, 36, 36),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       backgroundColor: const Color.fromARGB(255, 43, 36, 36),
 
       body: Padding(
@@ -21,9 +30,7 @@ class _EducationSelectionState extends State<EducationSelection> {
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
-
            
-
             const Text(
               'Education',
               style: TextStyle(
@@ -46,8 +53,7 @@ class _EducationSelectionState extends State<EducationSelection> {
 
             const SizedBox(height: 10),
 
-            
-
+           
             const Text(
               'UPLOAD STUDY MATERIAL',
               style: TextStyle(
@@ -61,7 +67,7 @@ class _EducationSelectionState extends State<EducationSelection> {
 
             GestureDetector(
               onTap: () {
-               //handle upload study material thing here 
+                // Handle upload study material action
               },
 
               child: Container(
@@ -75,13 +81,9 @@ class _EducationSelectionState extends State<EducationSelection> {
 
                 child: Row(
                   children: const [
-
                     SizedBox(width: 8),
 
-                    Icon(
-                      Icons.upload_file,
-                      color: Colors.white,
-                    ),
+                    Icon(Icons.upload_file, color: Colors.white),
 
                     SizedBox(width: 10),
 
@@ -100,8 +102,7 @@ class _EducationSelectionState extends State<EducationSelection> {
 
             const SizedBox(height: 15),
 
-           
-
+            
             const Text(
               'STUDY FREQUENCY',
               style: TextStyle(
@@ -113,8 +114,6 @@ class _EducationSelectionState extends State<EducationSelection> {
 
             const SizedBox(height: 5),
 
-           
-
             SizedBox(
               width: double.infinity,
               height: 80,
@@ -125,8 +124,7 @@ class _EducationSelectionState extends State<EducationSelection> {
                 },
 
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color.fromARGB(255, 109, 76, 65),
+                  backgroundColor: const Color.fromARGB(255, 109, 76, 65),
 
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
@@ -144,8 +142,6 @@ class _EducationSelectionState extends State<EducationSelection> {
               ),
             ),
 
-          
-
             SizedBox(
               width: double.infinity,
               height: 80,
@@ -156,8 +152,7 @@ class _EducationSelectionState extends State<EducationSelection> {
                 },
 
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color.fromARGB(255, 109, 76, 65),
+                  backgroundColor: const Color.fromARGB(255, 109, 76, 65),
 
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
@@ -176,19 +171,17 @@ class _EducationSelectionState extends State<EducationSelection> {
             ),
 
             
-
             SizedBox(
               width: double.infinity,
               height: 80,
 
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle monthly study frequency
+                  
                 },
 
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color.fromARGB(255, 109, 76, 65),
+                  backgroundColor: const Color.fromARGB(255, 109, 76, 65),
 
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
@@ -208,8 +201,7 @@ class _EducationSelectionState extends State<EducationSelection> {
 
             const SizedBox(height: 40),
 
-           
-
+            
             const Text(
               'FOCUS AREA',
               style: TextStyle(
@@ -219,11 +211,9 @@ class _EducationSelectionState extends State<EducationSelection> {
               ),
             ),
 
-            // Reduced from 20 to 5
             const SizedBox(height: 5),
 
            
-
             Container(
               width: double.infinity,
               height: 50,
@@ -232,13 +222,9 @@ class _EducationSelectionState extends State<EducationSelection> {
 
               child: Row(
                 children: const [
-
                   SizedBox(width: 8),
 
-                  Icon(
-                    Icons.person,
-                    color: Colors.white,
-                  ),
+                  Icon(Icons.person, color: Colors.white),
 
                   SizedBox(width: 8),
 
@@ -247,7 +233,6 @@ class _EducationSelectionState extends State<EducationSelection> {
                     crossAxisAlignment: CrossAxisAlignment.start,
 
                     children: [
-
                       Text(
                         'Self',
                         style: TextStyle(
@@ -275,8 +260,7 @@ class _EducationSelectionState extends State<EducationSelection> {
 
             const SizedBox(height: 10),
 
-           
-
+          
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -287,8 +271,7 @@ class _EducationSelectionState extends State<EducationSelection> {
                 },
 
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color.fromARGB(255, 109, 76, 65),
+                  backgroundColor: const Color.fromARGB(255, 109, 76, 65),
 
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
@@ -312,3 +295,4 @@ class _EducationSelectionState extends State<EducationSelection> {
     );
   }
 }
+

@@ -11,6 +11,15 @@ class _SetGoalState extends State<SetGoal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 43, 36, 36),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       backgroundColor: const Color.fromARGB(255, 49, 27, 20),
 
       body: Padding(
@@ -43,7 +52,7 @@ class _SetGoalState extends State<SetGoal> {
 
             const SizedBox(height: 10),
 
-            // FIRST CONTAINER - DAILY GOALS
+           
             Container(
               width: double.infinity,
               height: 120,
@@ -81,7 +90,7 @@ class _SetGoalState extends State<SetGoal> {
                     crossAxisAlignment: CrossAxisAlignment.center,
 
                     children: [
-                      // SUNDAY
+                     
                       GestureDetector(
                         onTap: () {},
                         child: Container(
@@ -92,15 +101,13 @@ class _SetGoalState extends State<SetGoal> {
                           child: const Center(
                             child: Text(
                               'S',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ),
                       ),
 
-                      // MONDAY
+                     
                       GestureDetector(
                         onTap: () {},
                         child: Container(
@@ -111,15 +118,13 @@ class _SetGoalState extends State<SetGoal> {
                           child: const Center(
                             child: Text(
                               'M',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ),
                       ),
 
-                      // TUESDAY
+                    
                       GestureDetector(
                         onTap: () {},
                         child: Container(
@@ -130,15 +135,13 @@ class _SetGoalState extends State<SetGoal> {
                           child: const Center(
                             child: Text(
                               'T',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ),
                       ),
 
-                      // WEDNESDAY
+                  
                       GestureDetector(
                         onTap: () {},
                         child: Container(
@@ -149,15 +152,13 @@ class _SetGoalState extends State<SetGoal> {
                           child: const Center(
                             child: Text(
                               'W',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ),
                       ),
 
-                      // THURSDAY
+                      
                       GestureDetector(
                         onTap: () {},
                         child: Container(
@@ -168,15 +169,13 @@ class _SetGoalState extends State<SetGoal> {
                           child: const Center(
                             child: Text(
                               'T',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ),
                       ),
 
-                      // FRIDAY
+                     
                       GestureDetector(
                         onTap: () {},
                         child: Container(
@@ -187,15 +186,13 @@ class _SetGoalState extends State<SetGoal> {
                           child: const Center(
                             child: Text(
                               'F',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ),
                       ),
 
-                      // SATURDAY
+                     
                       GestureDetector(
                         onTap: () {},
                         child: Container(
@@ -206,9 +203,7 @@ class _SetGoalState extends State<SetGoal> {
                           child: const Center(
                             child: Text(
                               'S',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ),
@@ -221,7 +216,7 @@ class _SetGoalState extends State<SetGoal> {
 
             const SizedBox(height: 10),
 
-            // SECOND CONTAINER - WEEKLY GOALS
+            
             Container(
               width: double.infinity,
               height: 200,
@@ -238,10 +233,7 @@ class _SetGoalState extends State<SetGoal> {
                 children: [
                   const Text(
                     'Weekly Goals',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
 
                   const SizedBox(height: 8),
@@ -249,13 +241,9 @@ class _SetGoalState extends State<SetGoal> {
                   const TextField(
                     maxLines: null,
                     keyboardType: TextInputType.multiline,
-                    style: TextStyle(
-                      color: Color(0xFFB2BEB5),
-                    ),
+                    style: TextStyle(color: Color(0xFFB2BEB5)),
 
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                    ),
+                    decoration: InputDecoration(border: InputBorder.none),
                   ),
                 ],
               ),
@@ -263,7 +251,6 @@ class _SetGoalState extends State<SetGoal> {
 
             const SizedBox(height: 10),
 
-            // THIRD CONTAINER - MONTHLY GOALS
             Container(
               width: double.infinity,
               height: 200,
@@ -280,10 +267,7 @@ class _SetGoalState extends State<SetGoal> {
                 children: [
                   const Text(
                     'Monthly Goals',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
 
                   const SizedBox(height: 8),
@@ -291,13 +275,9 @@ class _SetGoalState extends State<SetGoal> {
                   const TextField(
                     maxLines: null,
                     keyboardType: TextInputType.multiline,
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                    style: TextStyle(color: Colors.white),
 
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                    ),
+                    decoration: InputDecoration(border: InputBorder.none),
                   ),
                 ],
               ),
@@ -305,7 +285,7 @@ class _SetGoalState extends State<SetGoal> {
 
             const SizedBox(height: 10),
 
-            // SAVE BUTTON
+            
             SizedBox(
               width: double.infinity,
 
@@ -326,18 +306,13 @@ class _SetGoalState extends State<SetGoal> {
                   mainAxisAlignment: MainAxisAlignment.center,
 
                   children: [
-                    const Icon(
-                      Icons.star,
-                      color: Colors.white,
-                    ),
+                    const Icon(Icons.star, color: Colors.white),
 
                     const SizedBox(width: 8),
 
                     const Text(
                       'Save Goals',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
